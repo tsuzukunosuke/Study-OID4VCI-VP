@@ -19,7 +19,8 @@ OID4VCI / OID4VP 準拠の VC 発行・VP 検証基盤を、新しく確定し�
 | ① | [OID4VCI / OID4VP 基礎理解ドキュメント](./docs/01_oid4vci-vp-basics.md) | 初心者〜中級のエンジニア | 3 者モデル、VC/VP/DID の基礎、SD-JWT の選択的開示、OID4VCI 発行フロー・OID4VP 提示フローで**実際に流れるデータの具体例**、失効管理、用語集 |
 | ② | [OID4VC / OID4VP 対外説明資料](./docs/02_oid4vc-external-explainer.md) | 社外・非エンジニア | スライド構成の説明資料。課題と価値、ユースケース、標準化の潮流(EUDI Wallet 等)、セキュリティ FAQ、想定問答 |
 | ③ | [HAIP 対応ガイド](./docs/03_haip-migration-guide.md) | 既存基盤の開発者 | HAIP 1.0 Final の位置づけ、ドラフト実装からの**変更点ギャップ一覧**、MUST 要件チェックリスト、実装方法、移行ロードマップ |
-| ④ | [HAIP かみしばい「はいぷ先生の まほうのルールブック」](./docs/04_haip-kamishibai.html) | 新入社員・研修 | ③の内容を子ども向けアニメ風の紙芝居(HTML アニメーション)にした説明素材。全 12 ページ、各ページに技術用語への「おとなのことば」対応メモつき。ブラウザで開くだけで動作 |
+| ④ | [かみしばい「はいぷ先生の まほうのルールブック」](./docs/04_haip-kamishibai.html) | 新入社員・研修 | 子ども向けアニメ風の紙芝居(HTML アニメーション)。第 1 話は ③ の HAIP(12 ページ)、第 2 話は ⑤ の AI エージェントと UCP(8 ページ)。各ページに技術用語への「おとなのことば」対応メモつき。ブラウザで開くだけで動作 |
+| ⑤ | [AI エージェントと UCP 基礎理解ドキュメント](./docs/05_ai-agent-ucp-basics.md) | 新入社員・初心者 | AI エージェントの基礎、周辺プロトコル(MCP / A2A / AP2)、UCP(Universal Commerce Protocol)の概要と仕組み、DID / VC 基盤との接点 |
 
 ## 読む順番の目安
 

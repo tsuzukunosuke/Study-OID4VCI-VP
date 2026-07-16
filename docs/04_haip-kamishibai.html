@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>はいぷ先生の まほうのルールブック — HAIP かみしばい</title>
+<title>はいぷ先生の まほうのルールブック — HAIP・UCP かみしばい</title>
 </head>
 <body>
 <style>
@@ -154,6 +154,7 @@
   .who.d{background:#4A6FB5}
   .who.h{background:var(--orange)}
   .who.n{background:#8FA07A}
+  .who.a{background:#4BA99A}
 
   .art{
     flex:1;
@@ -292,7 +293,7 @@
 
 <div class="site-title">
   <h1>🏮 はいぷ先生の まほうのルールブック</h1>
-  <p>〜 デジタルしょうめいしょの あたらしい おやくそく「HAIP」の おはなし 〜</p>
+  <p>〜 だい1わ「HAIP」・だい2わ「AIエージェントと UCP」の おはなし 〜</p>
 </div>
 
 <!-- キャラクター定義 -->
@@ -422,6 +423,54 @@
       <line x1="58" y1="106" x2="118" y2="106" stroke="#E8B5B0" stroke-width="6" stroke-linecap="round"/>
       <text x="30" y="142" font-size="20" font-family="sans-serif" fill="#5EA757">〇</text>
       <line x1="58" y1="136" x2="118" y2="136" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+    </symbol>
+    <!-- エージェントくん(おつかいロボット) -->
+    <symbol id="ch-agent" viewBox="0 0 140 175">
+      <line x1="70" y1="24" x2="70" y2="10" stroke="#3C5560" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="70" cy="9" r="6" fill="#FF8FAB" stroke="#3C5560" stroke-width="3"/>
+      <rect x="22" y="40" width="8" height="18" rx="4" fill="#8ED0C0" stroke="#3C5560" stroke-width="3"/>
+      <rect x="110" y="40" width="8" height="18" rx="4" fill="#8ED0C0" stroke="#3C5560" stroke-width="3"/>
+      <rect x="30" y="24" width="80" height="56" rx="16" fill="#8ED0C0" stroke="#3C5560" stroke-width="4"/>
+      <rect x="41" y="35" width="58" height="34" rx="9" fill="#EAF7FC"/>
+      <circle cx="58" cy="50" r="5.5" fill="#3C5560"/>
+      <circle cx="82" cy="50" r="5.5" fill="#3C5560"/>
+      <path d="M62 58 Q70 66 78 58" fill="none" stroke="#3C5560" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M38 100 Q22 108 27 122" fill="none" stroke="#3C5560" stroke-width="6" stroke-linecap="round"/>
+      <path d="M102 100 Q118 108 113 122" fill="none" stroke="#3C5560" stroke-width="6" stroke-linecap="round"/>
+      <rect x="38" y="84" width="64" height="60" rx="14" fill="#8ED0C0" stroke="#3C5560" stroke-width="4"/>
+      <circle cx="70" cy="106" r="9" fill="#FFD66B" stroke="#3C5560" stroke-width="3"/>
+      <rect x="52" y="122" width="36" height="12" rx="6" fill="#EAF7FC" stroke="#3C5560" stroke-width="3"/>
+      <ellipse cx="55" cy="152" rx="12" ry="7" fill="#3C5560"/>
+      <ellipse cx="85" cy="152" rx="12" ry="7" fill="#3C5560"/>
+    </symbol>
+
+    <!-- おみせ -->
+    <symbol id="prop-shop" viewBox="0 0 175 135">
+      <rect x="24" y="52" width="128" height="76" rx="8" fill="#FFFDF6" stroke="#7A5C36" stroke-width="4"/>
+      <rect x="14" y="34" width="148" height="22" rx="8" fill="#FF8FAB" stroke="#C25E7C" stroke-width="3"/>
+      <rect x="32" y="36" width="16" height="18" fill="#FFFDF6"/>
+      <rect x="64" y="36" width="16" height="18" fill="#FFFDF6"/>
+      <rect x="96" y="36" width="16" height="18" fill="#FFFDF6"/>
+      <rect x="128" y="36" width="16" height="18" fill="#FFFDF6"/>
+      <rect x="42" y="76" width="34" height="52" rx="4" fill="#8ED0C0" stroke="#7A5C36" stroke-width="3"/>
+      <circle cx="70" cy="102" r="3" fill="#3C5560"/>
+      <rect x="94" y="76" width="42" height="30" rx="4" fill="#CDEBF5" stroke="#7A5C36" stroke-width="3"/>
+      <line x1="94" y1="91" x2="136" y2="91" stroke="#7A5C36" stroke-width="2"/>
+      <line x1="115" y1="76" x2="115" y2="106" stroke="#7A5C36" stroke-width="2"/>
+      <circle cx="88" cy="20" r="12" fill="#FFD66B" stroke="#B98A2B" stroke-width="3"/>
+      <text x="82" y="26" font-size="14" font-family="sans-serif" fill="#8A5A22">¥</text>
+    </symbol>
+
+    <!-- おつかいメモ(マンデート) -->
+    <symbol id="prop-memo" viewBox="0 0 150 170">
+      <rect x="16" y="14" width="118" height="144" rx="8" fill="#FFFDF6" stroke="#7A5C36" stroke-width="4"/>
+      <rect x="44" y="4" width="62" height="18" rx="7" fill="#FF9D3C" stroke="#B96A1E" stroke-width="3"/>
+      <line x1="30" y1="48" x2="118" y2="48" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <line x1="30" y1="70" x2="102" y2="70" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <line x1="30" y1="92" x2="110" y2="92" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <path d="M32 132 Q46 118 56 132 Q66 144 80 128" fill="none" stroke="#4A6FB5" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="108" cy="132" r="15" fill="#E2574C" stroke="#B03A31" stroke-width="3"/>
+      <path d="M101 132 L106 138 L116 126" fill="none" stroke="#FFE3BC" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     </symbol>
   </defs>
 </svg>
@@ -638,7 +687,143 @@
           </tbody>
         </table>
       </div>
-      <div class="otona" style="text-align:center"><span class="tag">つぎのステップ</span>くわしくは リポジトリの <b>docs/01(基礎)→ docs/03(HAIP 対応ガイド)</b> へ。おつかれさまでした! 🎉</div>
+      <div class="otona" style="text-align:center"><span class="tag">つぎのステップ</span>くわしくは リポジトリの <b>docs/01(基礎)→ docs/03(HAIP 対応ガイド)</b> へ。だい2わ「AIエージェントと UCP」に つづく! 🎉</div>
+    </section>
+
+    <!-- 13 第2話タイトル -->
+    <section class="scene" data-n="13">
+      <span class="s-eyebrow">だい2わ・その1</span>
+      <h2 class="s-title">エージェントくんの おつかい だいさくせん</h2>
+      <span class="spark" style="top:76px;left:14%">✦</span>
+      <span class="spark" style="top:120px;right:15%;animation-delay:.8s">✦</span>
+      <div class="art">
+        <div><svg class="ch big float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="prop float d2" role="img" aria-label="おみせ"><use href="#prop-shop"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who n">ナレーション</span>ここからは あたらしい おともだち、<b>おつかいロボットの「エージェントくん」</b>の おはなし。じつは さいごに、はいぷ先生の まほうとも つながるんだよ。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>第 2 話のテーマは <b>AI エージェント</b>と <b>UCP(Universal Commerce Protocol)</b>。詳細ドキュメントは docs/05 にあります。</div>
+    </section>
+
+    <!-- 14 AIエージェントとは -->
+    <section class="scene" data-n="14">
+      <span class="s-eyebrow">だい2わ・その2</span>
+      <h2 class="s-title">AIエージェントって なあに?</h2>
+      <div class="art">
+        <div><svg class="ch big float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="ch float d2" role="img" aria-label="ワレットくん"><use href="#ch-wallet"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who a">エージェントくん</span>ぼくは おしゃべりだけの AI じゃないよ。「くつを かってきて」って たのまれたら、<b>じぶんで かんがえて、しらべて、おみせに いって、かってくる</b>ところまで やるんだ!</p>
+        <p><span class="who w">ワレットくん</span>こたえる だけじゃなくて、<b>さいごまで やりとげる</b>のが エージェントなんだね!</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>AI エージェント = LLM(頭脳)+ 計画・記憶 + <b>ツール呼び出し</b>(手足)+ 実行ループ。「目標を渡すと自律的にやり遂げる」システムです。チャット AI との違いは「道具を使って実世界に働きかけ、結果を確認しながら進む」こと。</div>
+    </section>
+
+    <!-- 15 どうぐばこ(MCP/A2A) -->
+    <section class="scene" data-n="15">
+      <span class="s-eyebrow">だい2わ・その3</span>
+      <h2 class="s-title">どうぐばこの きょうつうコネクタ</h2>
+      <div class="art">
+        <div><svg class="ch big float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="ch float d2" role="img" aria-label="なかまのエージェント"><use href="#ch-agent"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who a">エージェントくん</span>ぼくの どうぐばこは、どんな どうぐでも <b>おなじ さしこみぐち</b>で つながるんだ。あたらしい どうぐも すぐ つかえるよ。</p>
+        <p><span class="who a">エージェントくん</span>それから、なかまの エージェントと <b>きょうりょく</b>するときの あいさつの しかたも きまってるんだ。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>ツール接続の標準が <b>MCP</b>(Model Context Protocol、「AI 界の USB-C」)、エージェント同士の連携標準が <b>A2A</b>(Agent2Agent)。役割分担された標準群がエージェントを支えています。</div>
+    </section>
+
+    <!-- 16 こまった(お店ごとにバラバラ) -->
+    <section class="scene" data-n="16">
+      <span class="s-eyebrow">だい2わ・その4</span>
+      <h2 class="s-title">たいへん! おみせの ことばが バラバラ!</h2>
+      <div class="art">
+        <div><svg class="ch big wobble" role="img" aria-label="こまっているエージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="prop" role="img" aria-label="おみせ1"><use href="#prop-shop"/></svg></div>
+        <div><svg class="prop" style="width:clamp(90px,15vw,150px)" role="img" aria-label="おみせ2"><use href="#prop-shop"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who a">エージェントくん</span>くつやさんに いったら、おみせごとに <b>ちゅうもんの しかたが ぜんぶ ちがう</b>んだ…… 100 けんの おみせが あったら、100 とおり おぼえなきゃ……。</p>
+        <p><span class="who n">ナレーション</span>おみせも こまっていました。「この ロボット、ほんとうに おうちのひとに たのまれたの……?」</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>エージェント経由の買い物(<b>エージェンティックコマース</b>)では、EC 各社の API がバラバラで個別対応が必要でした。店側も「正規のエージェントか」「本人の許可があるか」を確認できない。<b>だい1わの「ルールがバラバラ問題」と同じ構図</b>です。</div>
+    </section>
+
+    <!-- 17 UCPとうじょう -->
+    <section class="scene" data-n="17">
+      <span class="s-eyebrow">だい2わ・その5</span>
+      <h2 class="s-title">おかいものの きょうつうご「UCP」とうじょう!</h2>
+      <span class="spark" style="top:82px;left:16%">✦</span>
+      <span class="spark" style="top:140px;right:18%;animation-delay:.6s">✦</span>
+      <div class="art">
+        <div><svg class="ch big float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="prop float d2" role="img" aria-label="おみせ"><use href="#prop-shop"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who n">ナレーション</span>2026ねん 1がつ、せかいじゅうの おみせと ITのかいしゃが あつまって、<b>「おかいものの きょうつうご」= UCP</b> を つくりました。</p>
+        <p><span class="who a">エージェントくん</span>どのおみせでも、<b>「なにが できる?」→「しなもの みせて」→「カートに いれて」→「おかいけい!」</b>が おなじ ことばで つうじるんだ!</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>UCP(Universal Commerce Protocol)</b>は Google が 2026 年 1 月に NRF で発表したオープン仕様。Shopify・Walmart・Target など 20 社超が参加。店は「ディスカバリマニフェスト(できることリスト)」を公開し、カタログ検索 → カート → チェックアウト → 注文管理までを標準化。通信は REST / MCP / A2A のどれでも運べます。</div>
+    </section>
+
+    <!-- 18 あんぜんそうち -->
+    <section class="scene" data-n="18">
+      <span class="s-eyebrow">だい2わ・その6</span>
+      <h2 class="s-title">おつかいの あんぜんそうち</h2>
+      <div class="art">
+        <div><svg class="ch big float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="prop float d2" style="width:clamp(90px,15vw,140px)" role="img" aria-label="おつかいメモ"><use href="#prop-memo"/></svg></div>
+        <div><svg class="prop float d3" role="img" aria-label="おみせ"><use href="#prop-shop"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who a">エージェントくん</span>おみせに いくときは、<b>なまえを なのって、サインを つけて</b>、「おなじ ちゅうもんを 2かい しちゃう」ことも ないように するんだ。</p>
+        <p><span class="who n">ナレーション</span>うっかりも いたずらも、しくみで ふせぐのが おやくそくです。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>UCP のリクエストには必須ヘッダがあります:<code>UCP-Agent</code>(身元)、リクエスト署名(改ざん検知)、idempotency-key(<b>二重実行防止</b>)、request-id(トレース)。リトライしても注文は 1 回だけ実行されます。</div>
+    </section>
+
+    <!-- 19 マンデートとVC -->
+    <section class="scene" data-n="19">
+      <span class="s-eyebrow">だい2わ・その7</span>
+      <h2 class="s-title">「ほんとうに たのまれたの?」は まほうのメモで</h2>
+      <span class="spark" style="top:86px;left:12%">✦</span>
+      <span class="spark" style="top:150px;right:14%;animation-delay:.9s">✦</span>
+      <div class="art">
+        <div><svg class="ch float" role="img" aria-label="エージェントくん"><use href="#ch-agent"/></svg></div>
+        <div><svg class="prop float d2" style="width:clamp(90px,15vw,140px)" role="img" aria-label="サインつきのおつかいメモ"><use href="#prop-memo"/></svg></div>
+        <div><svg class="ch big float d3" role="img" aria-label="はいぷ先生"><use href="#ch-haip"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who a">エージェントくん</span>おかいけいの まえに、<b>「くつを 1まんえんまでで かっていいよ」って おうちのひとが サインした メモ</b>を みせるんだ。これで おみせも あんしん!</p>
+        <p><span class="who h">はいぷ先生</span>きづいたかな? その サインつきメモは、だい1わの <b>しょうめいしょ(VC)と おなじ まほう</b>なんだよ。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>支払い委任の証明は <b>AP2(Agent Payments Protocol)のマンデート</b>=「何を・いくらまで」というユーザー承認への電子署名つき委任状で、<b>Verifiable Credential ベース</b>。UCP ではチェックアウトの AP2 Mandates 拡張として使われます。<b>VC/VP 検証の技術がエージェント時代の信頼インフラになる</b>接点です。</div>
+    </section>
+
+    <!-- 20 第2話まとめ・対応表 -->
+    <section class="scene" data-n="20">
+      <span class="s-eyebrow">だい2わ・ふろく</span>
+      <h2 class="s-title">だい2わの おとなのことば たいおうひょう</h2>
+      <div class="map-table-wrap">
+        <table class="map">
+          <thead>
+            <tr><th>ものがたりの ことば</th><th>おとなの ことば(技術用語)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>エージェントくん</td><td>AI エージェント(LLM + 計画 + ツール呼び出し + 実行ループ)</td></tr>
+            <tr><td>どうぐばこの きょうつうコネクタ</td><td>MCP(Model Context Protocol)。なかまとの あいさつ = A2A(Agent2Agent)</td></tr>
+            <tr><td>おかいものの きょうつうご</td><td><b>UCP</b>(Universal Commerce Protocol、Google + 20 社超、2026-01 発表)</td></tr>
+            <tr><td>「なにが できる?」リスト</td><td>ディスカバリマニフェスト(対応 Capability・決済ハンドラの JSON)</td></tr>
+            <tr><td>なまえ・サイン・2かい ぼうし</td><td>必須ヘッダ:<code>UCP-Agent</code> / リクエスト署名 / idempotency-key / request-id</td></tr>
+            <tr><td>サインつき おつかいメモ</td><td>AP2 マンデート(ユーザー承認の暗号学的証明、<b>VC ベース</b>)</td></tr>
+            <tr><td>はいぷ先生との つながり</td><td>電子署名・Key Binding・トラストリストなど、VC/VP 検証と同じ技術スタック</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="otona" style="text-align:center"><span class="tag">つぎのステップ</span>くわしくは <b>docs/05(AI エージェントと UCP)</b> へ。これで ぜんぶ おしまい。おつかれさまでした! 🎉</div>
     </section>
   </div>
 
