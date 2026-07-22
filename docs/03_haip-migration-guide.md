@@ -9,6 +9,8 @@
 > 4. 実装方法と**移行ロードマップ**
 >
 > ⚠️ **注意**: 本ドキュメントは公開情報(公式仕様・解説記事)をもとに作成しています。個々の MUST/SHOULD の最終判断は、必ず [HAIP 1.0 Final 本文](https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html) を一次情報として確認してください。「要確認」と記した箇所は特に注意してください。
+>
+> 📝 **検証履歴**: 2026-07 に、OpenID Foundation の HAIP 仕様リポジトリ([openid/OpenID4VC-HAIP](https://github.com/openid/OpenID4VC-HAIP))の **draft-04(2025-09-19)** および **draft-06(2025-11-20、Final 直前版)** のソースを直接確認し、`client_id` プレフィックスと `iss` 要件の出典を確定しました(該当箇所に反映済み)。draft-06 → Final(2025-12)間の差分は未検証です。
 
 ---
 
@@ -76,11 +78,11 @@ flowchart TB
 | 2 | 提示要求のクエリ言語 | `presentation_definition`(DIF PE) | **DCQL(`dcql_query`)のみ**。PE は OID4VP 1.0 で削除 | Verifier / Wallet |
 | 3 | 提示レスポンスの保護 | `direct_post`(平文 POST) | **`direct_post.jwt`(JWE 暗号化)必須**。鍵合意は ECDH-ES | Verifier / Wallet |
 | 4 | リクエストの真正性 | 平文リクエスト or 任意の署名 | **署名付きリクエスト(JAR)必須**。`x5c` に X.509 チェーン | Verifier / Wallet |
-| 5 | Verifier の識別(`client_id`) | `client_id_scheme` パラメータ(別パラメータ方式) | **`client_id` プレフィックス方式**に統合(例: `x509_san_dns:verifier.example.com`)。HAIP は X.509 系プレフィックス(`x509_san_dns` / `x509_hash`)を採用(※どちらが MUST かは Final 本文で要確認) | Verifier / Wallet |
+| 5 | Verifier の識別(`client_id`) | `client_id_scheme` パラメータ(別パラメータ方式) | **`client_id` プレフィックス方式**に統合。**`x509_hash:` のみが MUST**(Verifier は使用、Wallet は受理)。旧ドラフトにあった `x509_san_dns:` や `verifier_attestations` は draft-04 時点で廃止済み(draft-04 ソースで確認済み。Final での再変更有無は要確認) | Verifier / Wallet |
 | 6 | 発行時の nonce(`c_nonce`) | トークンレスポンスや Credential レスポンスで受領 | **専用の Nonce Endpoint** から取得 | Issuer / Wallet |
 | 7 | Credential リクエスト/レスポンス形式 | `format` + `credential`(単数) | `credential_configuration_id` + **`proofs`(複数形)/ `credentials`(複数形)** | Issuer / Wallet |
 | 8 | アクセストークン | Bearer | **DPoP(RFC 9449)による送信者制約**必須 | Issuer / Wallet |
-| 9 | 認可リクエスト | 通常の認可リクエスト | **PAR(RFC 9126)+ PKCE(S256)**必須、認可レスポンスに `iss` を含める | Issuer / Wallet |
+| 9 | 認可リクエスト | 通常の認可リクエスト | **[FAPI2 Security Profile](https://openid.net/specs/fapi-security-profile-2_0.html) への準拠が MUST**(draft-06 で追加)。その一部として **PAR(RFC 9126)+ PKCE(S256)**必須、認可レスポンスに **`iss`(RFC 9207)**を含める | Issuer / Wallet |
 | 10 | ウォレットのクライアント認証 | `client_id` のみ / 認証なし | **Wallet Attestation**(OID4VCI 付録で定義される Attestation ベースのクライアント認証。検証鍵は `x5c` で提示) | Issuer / Wallet |
 | 11 | 鍵の保証 | proof JWT のみ(鍵の保管環境は不問) | **Key Attestation**(OID4VCI 付録)により、鍵がセキュアエリア(WSCD 等)に保管されていることを証明 | Issuer / Wallet |
 | 12 | 失効管理 | 独自 or 未実装 | **IETF Token Status List** | Issuer / Verifier |
@@ -96,10 +98,11 @@ flowchart TB
 
 ### 4.1 発行基盤(Issuer / 認可サーバー)の MUST
 
-- [ ] **認可コードフロー(`authorization_code` グラント)をサポート**する。認可コードフローでは `scope` 値でクレデンシャル種別を識別できるようにする
-- [ ] **PAR(Pushed Authorization Requests)** を要求する(認可エンドポイント利用時)
-- [ ] **PKCE(S256)** を強制する
-- [ ] 認可レスポンスに **`iss`** を含める(RFC 9207)
+- [ ] **認可コードフロー(`authorization_code` グラント)を MUST support**する(Pre-Authorized Code Flow は MUST ではない。draft-04 で確認済み)。認可コードフローでは `scope` 値でクレデンシャル種別を識別できるようにする
+- [ ] **[FAPI2 Security Profile](https://openid.net/specs/fapi-security-profile-2_0.html) の該当条項に MUST 準拠**する(draft-06 で追加された包括要件)。具体的には少なくとも以下を含む:
+  - **PAR(Pushed Authorization Requests)**(該当する場合)
+  - **PKCE(S256)**
+  - 認可レスポンスへの **`iss`(RFC 9207)** 付与(ミックスアップ攻撃対策)
 - [ ] **DPoP** を受け付け、`DPoP-Nonce` ヘッダを運用する(トークン・Nonce・Credential 各エンドポイント)
 - [ ] **Wallet Attestation によるクライアント認証**を検証する(検証鍵・トラストチェーンは `x5c` ヘッダ)
 - [ ] **Key Attestation** を検証する(proof の鍵がセキュアな環境で保持されていることの確認。`x5c` ヘッダ要件あり)
@@ -111,7 +114,7 @@ flowchart TB
 ### 4.2 検証基盤(Verifier)の MUST
 
 - [ ] 認可リクエストは **署名付きリクエストオブジェクト(JAR)** とし、**X.509 証明書チェーン(`x5c`)** で Verifier の身元を証明する
-- [ ] `client_id` は **X.509 系プレフィックス**(`x509_san_dns` / `x509_hash`)を用いる(※Final での指定は本文要確認)
+- [ ] `client_id` は **`x509_hash:` プレフィックス**を MUST use する(draft-04 で確認済み。`x509_san_dns:` は廃止)
 - [ ] クエリは **DCQL(`dcql_query`)** で表現する(`presentation_definition` は使用不可)
 - [ ] **`response_mode=direct_post.jwt`** を用い、レスポンス暗号化(**ECDH-ES** による JWE)のための鍵を `client_metadata` で提供する
 - [ ] 受領した VP について、Issuer 署名(X.509 チェーン → トラストアンカー)、ディスクロージャ整合、**KB-JWT(`nonce` / `aud` / `sd_hash`)**、有効期限、**Status List** を検証する
@@ -128,7 +131,7 @@ flowchart TB
 - [ ] `direct_post.jwt` でレスポンスを暗号化して送信する
 - [ ] KB-JWT による Key Binding を必ず行う
 
-> 📝 Pre-Authorized Code Flow の扱い(MUST か OPTIONAL か)、`x509_san_dns` と `x509_hash` の使い分け、DC API 対応の必須範囲などは、HAIP Final 本文の該当セクションを直接確認して確定してください(本ドキュメント末尾の一次情報リンク参照)。
+> 📝 Pre-Authorized Code Flow は draft-04 時点では MUST ではありません(Authorization Code Flow のみ MUST)。DC API 対応の必須範囲などは、HAIP Final 本文の該当セクションを直接確認して確定してください(本ドキュメント末尾の一次情報リンク参照)。
 
 ---
 
@@ -231,14 +234,15 @@ response=eyJhbGciOiJFQ0RILUVTIiwiZW5jIjoiQTEyOEdDTSIsImVwayI6ey4uLn19..
 
 **実装準備**: Verifier 用のクライアント証明書の発行・更新(有効期限管理)と、ウォレット側に配るトラストアンカーの配布運用(トラストリスト管理)が新たな運用要件になります。
 
-### 5.5 OAuth 層の強化(PAR / PKCE / DPoP / `iss`)
+### 5.5 OAuth 層の強化(FAPI2 準拠 / PAR / PKCE / DPoP / `iss`)
 
-いずれも成熟した OAuth 拡張であり、既存の認可サーバー製品・ライブラリの設定で有効化できることが多い部分です。
+HAIP は draft-06 で「**[FAPI2 Security Profile](https://openid.net/specs/fapi-security-profile-2_0.html) の該当条項に MUST 準拠**」という包括要件を追加しました(該当箇所: "OpenID for Verifiable Credential Issuance" 節冒頭)。PAR・PKCE・`iss` は、この FAPI2 準拠の**具体例として明記されている項目**という位置づけです。いずれも成熟した OAuth 拡張であり、既存の認可サーバー製品・ライブラリの設定で有効化できることが多い部分です。
 
 - **PAR(RFC 9126)**: 認可リクエストを事前に `POST /par` で登録し、`request_uri` で参照。`require_pushed_authorization_requests=true` を設定
 - **PKCE(RFC 7636)**: `code_challenge_method=S256` を必須化
-- **`iss` レスポンスパラメータ(RFC 9207)**: 認可レスポンスへ `iss` を付与(ミックスアップ攻撃対策)
+- **`iss` レスポンスパラメータ(RFC 9207)**: 認可レスポンスへ `iss` を付与(ミックスアップ攻撃対策)。draft-06 で FAPI2 準拠要件の一部として追加
 - **DPoP(RFC 9449)**: アクセストークンをウォレットの鍵に紐づけ(盗まれても使えない)。`DPoP-Nonce` ヘッダの払い出し・再試行フローを Token / Nonce / Credential エンドポイントで実装
+- **FAPI2 準拠の残りの条項**: 上記以外にも FAPI2 Security Profile 本文が定めるクライアント認証方式・レスポンスタイプ制限等が及ぶ可能性があるため、実装時は FAPI2 本文の該当箇所も確認してください
 
 ### 5.6 Wallet Attestation / Key Attestation
 
