@@ -22,12 +22,16 @@ OID4VCI / OID4VP 準拠の VC 発行・VP 検証基盤を、新しく確定し�
 | ④ | [かみしばい「はいぷ先生の まほうのルールブック」](./docs/04_haip-kamishibai.html) | 新入社員・研修 | 子ども向けアニメ風の紙芝居(HTML アニメーション)。第 1 話は ③ の HAIP(12 ページ)、第 2 話は ⑤ の AI エージェントと UCP(8 ページ)。各ページに技術用語への「おとなのことば」対応メモつき。ブラウザで開くだけで動作 |
 | ⑤ | [AI エージェントと UCP 基礎理解ドキュメント](./docs/05_ai-agent-ucp-basics.md) | 新入社員・初心者 | AI エージェントの基礎、周辺プロトコル(MCP / A2A / AP2)、UCP(Universal Commerce Protocol)の概要と仕組み、DID / VC 基盤との接点 |
 | ⑥ | [仕様相談・開発相談エージェントの作り方(Claude Projects 版)](./docs/06_consultation-agent-setup.md) | ドキュメント運用担当 | ①〜⑤ をナレッジとした社内相談エージェントのセットアップ手順、そのまま使える Custom Instructions、運用・メンテナンス方法 |
+| ⑦ | [HAIP 差分マトリクス(Excel)](./docs/07_haip-diff-matrix.xlsx) | 実装者 | HAIP と素の OID4VCI / OID4VP の MUST・任意「差分」比較(発行・検証・フォーマット、27項目)。サンプル・参照リンク付き |
+| ⑧ | [HAIP 要件カタログ(Excel)](./docs/08_haip-requirements-catalog.xlsx) | 実装者 | HAIP の全要件を MUST/SHOULD/MAY/MUST NOT で分類(エコシステム・Issuerメタデータ・暗号・Attestation 中心)+ OID4VCI メタデータ全パラメータ。サンプル・参照リンク付き |
+| ⑨ | [HAIP 仕様書 読み合わせコンパニオン(Excel)](./docs/09_haip-spec-companion.xlsx) | 仕様書を精読する人 | **仕様書の見出し順に全項目(PAR/PKCE/DPoP 等の基本フロー含む)を1シートに統合**。仕様書ページと並べてスクロールしながら読む用 |
 
 ## 読む順番の目安
 
 - はじめての方: ① → ②
 - 既存基盤の HAIP 対応を担当する方: ①(復習)→ ③
 - 社内相談エージェントを作りたい方: ①〜⑤ を一通り把握 → ⑥
+- 仕様書を精読する方: ⑨ を仕様書ページと並べて読む(全項目網羅)。差分だけ知りたいときは ⑦、レベル別カタログは ⑧
 
 ## 仕様バージョンの前提
 
