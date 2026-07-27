@@ -24,7 +24,8 @@ OID4VCI / OID4VP 準拠の VC 発行・VP 検証基盤を、新しく確定し�
 | ⑥ | [仕様相談・開発相談エージェントの作り方(Claude Projects 版)](./docs/06_consultation-agent-setup.md) | ドキュメント運用担当 | ①〜⑤ をナレッジとした社内相談エージェントのセットアップ手順、そのまま使える Custom Instructions、運用・メンテナンス方法 |
 | ⑦ | [HAIP 差分マトリクス(Excel)](./docs/07_haip-diff-matrix.xlsx) | 実装者 | HAIP と素の OID4VCI / OID4VP の MUST・任意「差分」比較(発行・検証・フォーマット、27項目)。サンプル・参照リンク付き |
 | ⑧ | [HAIP 要件カタログ(Excel)](./docs/08_haip-requirements-catalog.xlsx) | 実装者 | HAIP の全要件を MUST/SHOULD/MAY/MUST NOT で分類(エコシステム・Issuerメタデータ・暗号・Attestation 中心)+ OID4VCI メタデータ全パラメータ。サンプル・参照リンク付き |
-| ⑨ | [HAIP 仕様書 読み合わせコンパニオン(Excel)](./docs/09_haip-spec-companion.xlsx) | 仕様書を精読する人 | **仕様書の見出し順に全項目(PAR/PKCE/DPoP 等の基本フロー含む)を1シートに統合**。仕様書ページと並べてスクロールしながら読む用 |
+| ⑨ | [HAIP 仕様書 読み合わせコンパニオン(Excel)](./docs/09_haip-spec-companion.xlsx) | 仕様書を精読する人 | **仕様書の見出し順に全項目(PAR/PKCE/DPoP 等の基本フロー含む)を1シートに統合**。仕様書ページと並べてスクロールしながら読む用。HAIP / OID4VCI(素) / OID4VP(素)の3仕様レベル比較付き |
+| ⑩ | [かみしばい 第3話「ひみつを まもれる おつかいさん」](./docs/10_confidential-client-fapi2-kamishibai.html) | 新入社員・研修 | **Confidential Client と FAPI2 Security Profile** を子ども向けアニメ風の紙芝居(全11ページ)で解説。金庫・ぎんこう・きっぷ等の比喩で、PAR/PKCE/iss/DPoP まで。各ページに「おとなのことば」対応メモつき |
 
 ## 読む順番の目安
 
