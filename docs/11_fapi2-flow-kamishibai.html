@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>はいぷ先生の まほうのルールブック だい4わ — FAPI2 の証明の流れ(PAR・PKCE・DPoP)</title>
+</head>
+<body>
+<style>
+  :root{
+    --sky:#CDEBF5; --ink:#4A3B2C; --orange:#FF9D3C; --green:#7BC96F;
+    --pink:#FF8FAB; --blue:#5FB4D9; --purple:#9B7ED9; --brown:#A97B45;
+    --wood:#8B5E3C; --wood-dark:#6E4527; --cream:#FFFDF6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Hiragino Maru Gothic ProN","Hiragino Kaku Gothic ProN","BIZ UDGothic","Yu Gothic","Meiryo",sans-serif;
+    background:radial-gradient(circle at 82% 12%, #FFE9A8 0 70px, transparent 71px),
+      linear-gradient(180deg,#BFE5F2 0%, #DFF2F9 55%, #F6EED8 100%);
+    color:var(--ink); min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:20px 12px 40px; line-height:1.6;
+  }
+  .site-title{text-align:center;margin:6px 0 14px}
+  .site-title h1{font-size:clamp(18px,3.6vw,28px);letter-spacing:.04em;text-wrap:balance;text-shadow:0 2px 0 rgba(255,255,255,.8)}
+  .site-title p{font-size:clamp(12px,2vw,15px);color:#7A6A52;letter-spacing:.08em}
+
+  .stage-wrap{width:min(960px,97vw)}
+  .stage{position:relative;background:linear-gradient(180deg,var(--sky) 0%, #E7F5FA 62%, #DDF0D8 62.5%, #CFE9C6 100%);
+    border:14px solid var(--wood);border-radius:22px;
+    box-shadow:inset 0 0 0 4px var(--wood-dark), 0 14px 30px rgba(90,60,30,.28);
+    overflow:hidden;min-height:560px;display:flex}
+  .stage::before,.stage::after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:#F3D9A4;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);top:8px;z-index:5}
+  .stage::before{left:8px} .stage::after{right:8px}
+  .cloud{position:absolute;top:24px;width:100px;height:30px;border-radius:30px;background:#fff;opacity:.8;z-index:0}
+  .cloud::before{content:"";position:absolute;left:18px;top:-16px;width:40px;height:32px;border-radius:50%;background:#fff}
+  .cloud.c1{left:-120px;animation:drift 52s linear infinite}
+  @keyframes drift{to{transform:translateX(calc(960px + 260px))}}
+
+  .scene{display:none;position:relative;z-index:1;flex-direction:column;width:100%;padding:20px 24px 16px}
+  .scene.active{display:flex;animation:scene-in .4s ease-out both}
+  @keyframes scene-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  .s-eyebrow{align-self:center;background:var(--purple);color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.14em;padding:3px 15px;border-radius:999px;box-shadow:0 2px 0 #7E5FC4}
+  .s-title{text-align:center;font-size:clamp(17px,2.8vw,24px);margin:8px 0 6px;letter-spacing:.03em;text-wrap:balance}
+
+  .bubble{position:relative;background:var(--cream);border:3px solid var(--ink);border-radius:16px;padding:10px 16px;max-width:700px;margin:6px auto 2px;font-size:clamp(13px,2vw,16px);font-weight:700;box-shadow:0 4px 0 rgba(74,59,44,.16)}
+  .bubble p+p{margin-top:5px}
+  .who{border-radius:6px;padding:0 6px;margin-right:4px;color:#fff;font-size:.82em}
+  .who.h{background:var(--orange)} .who.w{background:var(--blue)}
+  .who.o{background:var(--brown)} .who.r{background:var(--purple)} .who.n{background:#8FA07A}
+
+  .flowrow{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 2px;flex-wrap:wrap}
+  .flowrow .who-svg{width:clamp(52px,9vw,74px)}
+  .flowrow .arw{font-size:24px;color:var(--purple);font-weight:900}
+  .flowrow .tag2{font-weight:700;font-size:12px;background:#fff;border:2px solid #D8C6A4;border-radius:999px;padding:2px 10px}
+
+  .art{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,4vw,40px);padding:10px 0 8px;min-height:170px}
+  .art svg{display:block;height:auto}
+  .ch{width:clamp(88px,15vw,140px)} .ch.big{width:clamp(116px,20vw,180px)} .ch.small{width:clamp(64px,10vw,96px)}
+  .prop{width:clamp(96px,16vw,160px)}
+  .col{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .caplabel{font-weight:700;font-size:11.5px;text-align:center}
+
+  .float{animation:float 3.4s ease-in-out infinite}.float.d2{animation-delay:.6s}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.9)}to{opacity:1;transform:none}}
+  .scene.active .art>*,.scene.active .flowrow>*{animation:pop .45s both}
+
+  .spark{position:absolute;font-size:20px;color:#F5B93C;z-index:2;animation:tw 1.9s ease-in-out infinite;text-shadow:0 0 6px rgba(255,214,107,.8)}
+  @keyframes tw{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+
+  /* データパケット(送受信メッセージ) */
+  .wire{background:var(--cream);border:2.5px solid var(--ink);border-radius:12px;max-width:720px;margin:8px auto 0;overflow:hidden;box-shadow:0 3px 0 rgba(74,59,44,.15);width:100%}
+  .wire .whead{background:var(--blue);color:#fff;font-weight:700;font-size:12px;padding:5px 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+  .wire.from-as .whead{background:var(--brown)} .wire.from-rs .whead{background:var(--purple)} .wire.from-hp .whead{background:var(--orange-deep,#E2803A)}
+  .wire .whead .ep{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;opacity:.96}
+  .wire pre{margin:0;padding:9px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:#3a2f22}
+  .wire .k{color:#B5651D;font-weight:bold}
+  .wire .c{color:#7A6A52;font-style:italic}
+
+  /* 検証チェックリスト */
+  .checks{background:#F4FBF2;border:2.5px solid #5EA757;border-radius:12px;max-width:720px;margin:8px auto 0;padding:8px 14px;text-align:left;box-shadow:0 3px 0 rgba(74,90,44,.13);width:100%}
+  .checks .chead{font-weight:700;font-size:12.5px;margin-bottom:3px;color:#3f7a34}
+  .checks ul{list-style:none;margin:0;padding:0}
+  .checks li{font-size:12px;padding:2px 0 2px 22px;position:relative;line-height:1.5}
+  .checks li::before{content:"✓";position:absolute;left:2px;color:#5EA757;font-weight:bold}
+  .checks code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#E4F0DD;border-radius:5px;padding:0 4px;font-size:.9em}
+
+  /* 全体フロー */
+  .steplist{max-width:640px;margin:6px auto 0;width:100%}
+  .steplist li{list-style:none;display:flex;gap:10px;align-items:flex-start;background:var(--cream);border:2px solid var(--ink);border-radius:12px;padding:7px 12px;margin-bottom:6px;font-size:13px;font-weight:700;box-shadow:0 2px 0 rgba(74,59,44,.14)}
+  .steplist .num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+  .steplist small{display:block;font-weight:400;color:#7A6A52;font-size:11.5px}
+
+  .otona{background:rgba(255,255,255,.88);border:2px dashed #B99B6B;border-radius:14px;padding:9px 14px;font-size:clamp(11.5px,1.8vw,13.5px);max-width:840px;margin:8px auto 0;line-height:1.65}
+  .otona .tag{display:inline-block;background:var(--green);color:#fff;font-weight:700;font-size:11.5px;border-radius:999px;padding:1px 11px;margin-right:8px;letter-spacing:.06em;vertical-align:1px}
+  .otona code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F3EBD9;border-radius:6px;padding:0 5px;font-size:.92em}
+
+  .map-table-wrap{overflow-x:auto;max-width:840px;margin:8px auto 0;width:100%}
+  table.map{border-collapse:separate;border-spacing:0;background:var(--cream);border:3px solid var(--ink);border-radius:14px;overflow:hidden;font-size:clamp(11.5px,1.8vw,14px);width:100%}
+  table.map th{background:var(--purple);color:#fff;padding:7px 12px}
+  table.map td{padding:6px 12px;border-top:2px dotted #D8C6A4;vertical-align:top}
+  table.map td:first-child{font-weight:700;white-space:nowrap}
+  table.map code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F3EBD9;border-radius:6px;padding:0 5px;font-size:.9em}
+
+  .controls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+  .btn{font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.06em;color:#fff;background:var(--purple);border:none;border-radius:999px;padding:12px 28px;cursor:pointer;box-shadow:0 5px 0 #7E5FC4;transition:transform .08s,box-shadow .08s,background .2s}
+  .btn:hover{background:#AC90E4}.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #7E5FC4}
+  .btn:focus-visible{outline:3px solid var(--blue);outline-offset:3px}.btn[disabled]{opacity:.4;cursor:default}
+  .btn.ghost{background:var(--cream);color:var(--ink);box-shadow:0 5px 0 #D8C6A4;border:2px solid #D8C6A4;font-size:14px;padding:10px 20px}
+  .btn.ghost:hover{background:#fff}.btn.ghost[aria-pressed="true"]{background:var(--green);color:#fff;border-color:#5EA757;box-shadow:0 5px 0 #5EA757}
+  .pageno{font-weight:700;font-variant-numeric:tabular-nums;background:var(--cream);border:2px solid #D8C6A4;border-radius:999px;padding:8px 16px;font-size:14px}
+  .dots{display:flex;gap:7px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--wood);background:var(--cream);cursor:pointer;padding:0;transition:background .2s,transform .2s}
+  .dot:focus-visible{outline:3px solid var(--blue);outline-offset:2px}.dot[aria-current="true"]{background:var(--purple);transform:scale(1.25)}
+  .hint{text-align:center;color:#7A6A52;font-size:12px;margin-top:10px}
+
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+</style>
+
+<div class="site-title">
+  <h1>🔏 はいぷ先生の まほうのルールブック だい4わ</h1>
+  <p>〜 FAPI2 の しょうめいの ながれ:PAR → PKCE → iss → DPoP を おってみよう 〜</p>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ch-haip" viewBox="0 0 160 185">
+      <path d="M36 108 Q18 116 24 130" fill="none" stroke="#8A5A22" stroke-width="6" stroke-linecap="round"/>
+      <path d="M124 100 Q142 88 138 72" fill="none" stroke="#8A5A22" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="138,72 130,58 148,62 144,78" fill="#FFD66B" stroke="#B98A2B" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="36" y="58" width="88" height="108" rx="12" fill="#FF9D3C" stroke="#8A5A22" stroke-width="4"/>
+      <rect x="36" y="58" width="16" height="108" rx="8" fill="#D97E2B"/>
+      <line x1="118" y1="66" x2="118" y2="158" stroke="#FFE3BC" stroke-width="4"/>
+      <circle cx="74" cy="96" r="6" fill="#4A3B2C"/><circle cx="102" cy="96" r="6" fill="#4A3B2C"/>
+      <circle cx="67" cy="110" r="5" fill="#FFB7C5"/><circle cx="109" cy="110" r="5" fill="#FFB7C5"/>
+      <path d="M78 112 Q88 122 98 112" fill="none" stroke="#4A3B2C" stroke-width="3.5" stroke-linecap="round"/>
+      <text x="60" y="150" font-size="17" font-weight="bold" fill="#8A5A22" font-family="sans-serif">HAIP</text>
+      <polygon points="88,6 58,58 118,58" fill="#9B7ED9" stroke="#6C4FA8" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="88" cy="58" rx="40" ry="9" fill="#7E5FC4" stroke="#6C4FA8" stroke-width="3"/>
+      <polygon points="88,22 91,31 100,31 93,37 96,46 88,40 80,46 83,37 76,31 85,31" fill="#FFD66B"/>
+      <ellipse cx="64" cy="174" rx="12" ry="6" fill="#8A5A22"/><ellipse cx="98" cy="174" rx="12" ry="6" fill="#8A5E22"/>
+    </symbol>
+    <symbol id="ch-wallet" viewBox="0 0 120 170">
+      <path d="M18 92 Q2 98 7 112" fill="none" stroke="#3C4B57" stroke-width="6" stroke-linecap="round"/>
+      <path d="M102 92 Q118 98 113 112" fill="none" stroke="#3C4B57" stroke-width="6" stroke-linecap="round"/>
+      <rect x="18" y="18" width="84" height="132" rx="18" fill="#5FB4D9" stroke="#3C4B57" stroke-width="4"/>
+      <rect x="28" y="32" width="64" height="84" rx="10" fill="#EAF7FC"/>
+      <circle cx="48" cy="64" r="6" fill="#3C4B57"/><circle cx="72" cy="64" r="6" fill="#3C4B57"/>
+      <circle cx="41" cy="78" r="5" fill="#FFB7C5"/><circle cx="79" cy="78" r="5" fill="#FFB7C5"/>
+      <path d="M52 80 Q60 90 68 80" fill="none" stroke="#3C4B57" stroke-width="3.5" stroke-linecap="round"/>
+      <rect x="34" y="122" width="42" height="22" rx="5" fill="#FFD66B" stroke="#3C4B57" stroke-width="3"/>
+      <line x1="40" y1="130" x2="64" y2="130" stroke="#B98A2B" stroke-width="3" stroke-linecap="round"/>
+      <line x1="40" y1="137" x2="56" y2="137" stroke="#B98A2B" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="45" cy="158" rx="11" ry="6" fill="#3C4B57"/><ellipse cx="75" cy="158" rx="11" ry="6" fill="#3C4B57"/>
+    </symbol>
+    <symbol id="ch-owl" viewBox="0 0 150 175">
+      <polygon points="42,38 52,12 62,36" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4" stroke-linejoin="round"/>
+      <polygon points="88,36 98,12 108,38" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="75" cy="102" rx="52" ry="62" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4"/>
+      <ellipse cx="75" cy="120" rx="32" ry="38" fill="#EAD9BB"/>
+      <ellipse cx="30" cy="105" rx="13" ry="30" fill="#B98A5A" stroke="#6B4A2B" stroke-width="3.5"/>
+      <circle cx="58" cy="74" r="15" fill="#fff" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="92" cy="74" r="15" fill="#fff" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="58" cy="76" r="5.5" fill="#3C2F1E"/><circle cx="92" cy="76" r="5.5" fill="#3C2F1E"/>
+      <circle cx="58" cy="74" r="19" fill="none" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="92" cy="74" r="19" fill="none" stroke="#6B4A2B" stroke-width="3"/>
+      <polygon points="75,88 67,98 83,98" fill="#FF9D3C" stroke="#6B4A2B" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="120" cy="103" rx="13" ry="28" fill="#B98A5A" stroke="#6B4A2B" stroke-width="3.5" transform="rotate(-25 120 103)"/>
+      <ellipse cx="58" cy="166" rx="12" ry="6" fill="#FF9D3C"/><ellipse cx="92" cy="166" rx="12" ry="6" fill="#FF9D3C"/>
+    </symbol>
+    <symbol id="prop-safe" viewBox="0 0 150 140">
+      <rect x="10" y="10" width="130" height="118" rx="14" fill="#8FA3B8" stroke="#4E6072" stroke-width="5"/>
+      <rect x="24" y="24" width="102" height="90" rx="10" fill="#AABDCF" stroke="#4E6072" stroke-width="3"/>
+      <circle cx="75" cy="66" r="22" fill="#DDE7EF" stroke="#4E6072" stroke-width="4"/>
+      <line x1="75" y1="66" x2="75" y2="50" stroke="#4E6072" stroke-width="4" stroke-linecap="round"/>
+      <line x1="75" y1="66" x2="87" y2="72" stroke="#4E6072" stroke-width="4" stroke-linecap="round"/>
+      <rect x="60" y="96" width="30" height="10" rx="5" fill="#4E6072"/>
+    </symbol>
+    <symbol id="prop-bank" viewBox="0 0 190 150">
+      <polygon points="95,10 182,52 8,52" fill="#F4D8A8" stroke="#7A5C36" stroke-width="4" stroke-linejoin="round"/>
+      <rect x="18" y="52" width="154" height="14" fill="#E9C687" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="30" y="66" width="16" height="62" fill="#FFFDF6" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="62" y="66" width="16" height="62" fill="#FFFDF6" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="112" y="66" width="16" height="62" fill="#FFFDF6" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="144" y="66" width="16" height="62" fill="#FFFDF6" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="84" y="66" width="22" height="62" rx="2" fill="#9B7ED9" stroke="#7A5C36" stroke-width="3"/>
+      <rect x="14" y="128" width="162" height="14" rx="3" fill="#E9C687" stroke="#7A5C36" stroke-width="3"/>
+      <text x="70" y="42" font-size="13" font-weight="bold" font-family="sans-serif" fill="#8A5A22">まどぐち</text>
+    </symbol>
+    <symbol id="prop-ticket" viewBox="0 0 180 90">
+      <path d="M12 12 H168 V38 A8 8 0 0 0 168 62 V78 H12 V62 A8 8 0 0 0 12 38 Z" fill="#FFE9A8" stroke="#B98A2B" stroke-width="4" stroke-linejoin="round"/>
+      <line x1="122" y1="16" x2="122" y2="74" stroke="#B98A2B" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="24" y="52" font-size="19" font-weight="bold" font-family="sans-serif" fill="#8A5A22">TOKEN</text>
+      <circle cx="146" cy="45" r="13" fill="#5FB4D9" stroke="#3C4B57" stroke-width="3"/>
+      <path d="M140 45 l4 5 l8 -10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="prop-key" viewBox="0 0 120 120">
+      <circle cx="40" cy="40" r="26" fill="none" stroke="#E2803A" stroke-width="12"/>
+      <line x1="56" y1="56" x2="98" y2="98" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+      <line x1="82" y1="82" x2="96" y2="68" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+      <line x1="94" y1="94" x2="106" y2="82" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage-wrap">
+  <div class="stage" id="stage" aria-live="polite">
+    <div class="cloud c1"></div>
+
+    <!-- 1 タイトル -->
+    <section class="scene" data-n="1">
+      <span class="s-eyebrow">だい4わ・その1</span>
+      <h2 class="s-title">FAPI2 の しょうめいの ながれを おってみよう</h2>
+      <span class="spark" style="top:66px;left:13%">✦</span>
+      <span class="spark" style="top:110px;right:14%;animation-delay:.7s">✦</span>
+      <div class="art">
+        <div class="col"><svg class="ch big float" role="img" aria-label="はいぷ先生"><use href="#ch-haip"/></svg></div>
+        <div class="col"><svg class="ch small float d2" role="img" aria-label="ワレットくん"><use href="#ch-wallet"/></svg></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who h">はいぷ先生</span>だい3わでは FAPI2 が「ぎんこうの きびしい ルールブック」だと ならったね。だい4わでは、<b>じっさいに どんな じゅんばんで、なにを おくりあって、どう けんさして いるか</b>を、ステップごとに くわしく おってみよう!</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>本編は FAPI2 Security Profile が求める<b>認可コードフロー</b>を、<b>PAR(事前登録)→ PKCE(コード横取り防止)→ iss(発行者確認)→ DPoP(トークンを鍵に束縛)</b>の順で追います。実際に送受信するパラメータと、受け取った側の検証内容を各ページに掲載します。</div>
+    </section>
+
+    <!-- 2 登場人物 -->
+    <section class="scene" data-n="2">
+      <span class="s-eyebrow">だい4わ・その2</span>
+      <h2 class="s-title">とうじょう人物は 3人(+あなた)</h2>
+      <div class="art">
+        <div class="col"><svg class="ch float" role="img" aria-label="ワレットくん"><use href="#ch-wallet"/></svg><div class="caplabel">クライアント<br>(ワレットくん)</div></div>
+        <div class="col"><svg class="ch float d2" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><div class="caplabel">にんかサーバー<br>(フクロウさん)</div></div>
+        <div class="col"><svg class="prop float" role="img" aria-label="リソースサーバー"><use href="#prop-bank"/></svg><div class="caplabel">リソースサーバー<br>(はっこうまどぐち)</div></div>
+      </div>
+      <div class="bubble">
+        <p><span class="who w">クライアント</span>あなたの かわりに、けんさを うけて「きっぷ(トークン)」を もらい、まどぐちで しょうめいしょ(VC)を うけとる おつかいさん。</p>
+        <p><span class="who o">にんかサーバー</span>ほんにん確認や けんさを して、きっぷを はっこうする がかり。</p>
+        <p><span class="who r">リソースサーバー</span>きっぷを かくにんして、しょうめいしょ(VC)を わたす まどぐち。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>OAuth の役: <b>Client</b>(ウォレット)/ <b>Authorization Server</b>(トークンを発行)/ <b>Resource Server</b>(OID4VCI では Credential Endpoint)。あなた=<b>Resource Owner</b>(本人)。</div>
+    </section>
+
+    <!-- 3 全体の流れ -->
+    <section class="scene" data-n="3">
+      <span class="s-eyebrow">だい4わ・その3</span>
+      <h2 class="s-title">ぜんたいの ながれ(6ステップ)</h2>
+      <ul class="steplist">
+        <li><span class="num">0</span><div>じゅんび:PKCE の あいことばペア と DPoP の かぎペアを つくる<small>クライアントが自分の中で 2 種類の秘密を用意</small></div></li>
+        <li><span class="num">1</span><div>PAR:おねがいを こっそり さきに とうろく → うけとり番号(request_uri)<small>Client ▶ AS(PARエンドポイント)</small></div></li>
+        <li><span class="num">2</span><div>認可リクエスト:ブラウザで うけとり番号を みせて ログイン・どうい<small>Client ▶(ブラウザ)▶ AS</small></div></li>
+        <li><span class="num">3</span><div>認可レスポンス:みじかい「ひきかえ券(code)」+ おくり主なふだ(iss)<small>AS ▶ Client。iss を かならず確認</small></div></li>
+        <li><span class="num">4</span><div>トークンリクエスト:code + あいことば + DPoP しょうめい → きっぷ(トークン)<small>Client ▶ AS(トークンエンドポイント)</small></div></li>
+        <li><span class="num">5</span><div>リソースアクセス:きっぷ + DPoP しょうめい で しょうめいしょ(VC)を うけとる<small>Client ▶ Resource Server</small></div></li>
+      </ul>
+      <div class="otona"><span class="tag">おとなのことば</span>この後のページで各ステップの<b>実際のメッセージ</b>と<b>検証内容</b>を1つずつ見ていきます。PAR=STEP1、PKCE=STEP0で用意しSTEP4で照合、iss=STEP3で確認、DPoP=STEP0で鍵生成・STEP4で束縛・STEP5で使用、という対応です。</div>
+    </section>
+
+    <!-- 4 準備1 PKCE -->
+    <section class="scene" data-n="4">
+      <span class="s-eyebrow">STEP0 じゅんび①</span>
+      <h2 class="s-title">PKCE:あいことばの ペアを つくる</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="ワレットくん"><use href="#ch-wallet"/></svg><span class="tag2">クライアントの中だけで こっそり</span></div>
+      <div class="wire">
+        <div class="whead"><span>クライアントが 自分で 生成(まだ 送らない)</span></div>
+        <pre><span class="c"># ① ながい ひみつの あいことば(自分だけが持つ)</span>
+<span class="k">code_verifier</span> = dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+
+<span class="c"># ② ①を ハッシュ(SHA-256)した「合言葉の かげ」</span>
+<span class="k">code_challenge</span> = E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+<span class="k">code_challenge_method</span> = S256   <span class="c"># = BASE64URL(SHA256(verifier))</span></pre>
+      </div>
+      <div class="bubble">
+        <p><span class="who h">はいぷ先生</span>いま おくるのは <b>かげ(challenge)だけ</b>。ほんものの あいことば(verifier)は <b>てもとに かくしておく</b>。あとで「かげと ぴったり あう あいことば」を だせるのは 本人だけ、というワザだよ。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>PKCE(RFC7636)</b>。<code>code_verifier</code> は高エントロピーの乱数。<code>code_challenge = BASE64URL(SHA256(code_verifier))</code>、<code>method=S256</code>。この時点では challenge のみを送り、verifier は STEP4 まで秘匿します。</div>
+    </section>
+
+    <!-- 5 準備2 DPoP鍵 -->
+    <section class="scene" data-n="5">
+      <span class="s-eyebrow">STEP0 じゅんび②</span>
+      <h2 class="s-title">DPoP:じぶんだけの かぎペアを つくる</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="ワレットくん"><use href="#ch-wallet"/></svg><span class="arw">＋</span><svg class="who-svg" role="img" aria-label="かぎ" style="width:52px"><use href="#prop-key"/></svg></div>
+      <div class="wire">
+        <div class="whead"><span>クライアントが 自分で 生成(秘密鍵は 外に 出さない)</span></div>
+        <pre><span class="c"># DPoP用の かぎペア(公開鍵 と 秘密鍵)</span>
+<span class="k">公開鍵 (jwk)</span>  = { "kty":"EC", "crv":"P-256", "x":"l8t...", "y":"9VE..." }
+<span class="k">秘密鍵</span>        = (端末の 金庫の 中。ぜったいに 外に 出さない)
+
+<span class="c"># この公開鍵から 計算できる「ゆびもん(thumbprint)」</span>
+<span class="k">jkt</span> = 0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I</pre>
+      </div>
+      <div class="bubble">
+        <p><span class="who h">はいぷ先生</span>この <b>かぎペア</b>が DPoP の しゅやく。あとで きっぷ(トークン)を この かぎに <b>ひもづけ</b>して、「かぎを もつ本人だけ つかえる きっぷ」に するんだ。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>DPoP(RFC9449)</b>用の鍵ペア。秘密鍵はセキュアエレメント等に保管。公開鍵の SHA-256 サムプリント <code>jkt</code>(JWK Thumbprint)が、後でトークンに刻まれる「束縛先の指紋」になります。</div>
+    </section>
+
+    <!-- 6 STEP1 PAR -->
+    <section class="scene" data-n="6">
+      <span class="s-eyebrow">STEP1</span>
+      <h2 class="s-title">PAR:おねがいを こっそり さきに とうろく</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><span class="tag2">POST /par(うらぐち)</span></div>
+      <div class="wire">
+        <div class="whead"><span>① クライアント ▶ 認可サーバー</span><span class="ep">POST /par</span></div>
+        <pre><span class="k">response_type</span>=code
+<span class="k">client_id</span>=s6BhdRkqt3
+<span class="k">redirect_uri</span>=https://wallet.example.org/cb
+<span class="k">scope</span>=employee_credential
+<span class="k">state</span>=af0ifjsldkj
+<span class="k">code_challenge</span>=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+<span class="k">code_challenge_method</span>=S256
+<span class="c"># ↓ クライアント認証(FAPI2で必須。例: 鍵で署名した証明)</span>
+<span class="k">client_assertion_type</span>=...jwt-bearer
+<span class="k">client_assertion</span>=eyJhbGciOiJFUzI1Ni...(署名JWT)</pre>
+      </div>
+      <div class="wire from-as">
+        <div class="whead"><span>← 認可サーバーの おへんじ</span><span class="ep">201 Created</span></div>
+        <pre>{ "<span class="k">request_uri</span>": "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c",
+  "<span class="k">expires_in</span>": 60 }</pre>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>PAR(RFC9126)</b>。認可リクエストの全パラメータを、ブラウザを経由せず<b>サーバー間で直接・認証付きで</b>先に登録。AS は内容を保存し、短命の <code>request_uri</code> を返します。ブラウザの URL にパラメータを晒さないので<b>改ざん・盗み見・肥大化を防止</b>。</div>
+    </section>
+
+    <!-- 7 STEP2 認可リクエスト -->
+    <section class="scene" data-n="7">
+      <span class="s-eyebrow">STEP2</span>
+      <h2 class="s-title">認可リクエスト:うけとり番号を みせて ログイン</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg><span class="arw">▶</span><span class="tag2">ブラウザ</span><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg></div>
+      <div class="wire">
+        <div class="whead"><span>② ブラウザ ▶ 認可サーバー</span><span class="ep">GET /authorize</span></div>
+        <pre><span class="c"># URLには もう「うけとり番号」と client_id しか のせない!</span>
+GET /authorize?<span class="k">client_id</span>=s6BhdRkqt3
+  &<span class="k">request_uri</span>=urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c</pre>
+      </div>
+      <div class="bubble">
+        <p><span class="who o">にんかサーバー</span>うけとり番号だね。中身は さっき とうろく済み。では <b>本人ログイン</b>と <b>「この しょうめいしょを わたして いい?」の どうい</b>を おねがい。</p>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>FAPI2/HAIP では認可リクエストは PAR の <code>request_uri</code> 参照のみ。実際の要求内容はすべて AS 側に保存済みなので、ブラウザ経由でパラメータが渡らず安全。ここでユーザー認証と同意(consent)が行われます。</div>
+    </section>
+
+    <!-- 8 STEP3 認可レスポンス + iss -->
+    <section class="scene" data-n="8">
+      <span class="s-eyebrow">STEP3</span>
+      <h2 class="s-title">認可レスポンス:ひきかえ券(code)+ おくり主なふだ(iss)</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg></div>
+      <div class="wire from-as">
+        <div class="whead"><span>③ 認可サーバー ▶ クライアント</span><span class="ep">302 Redirect</span></div>
+        <pre>https://wallet.example.org/cb?<span class="k">code</span>=SplxlOBeZQQYbYS6WxSbIA
+  &<span class="k">state</span>=af0ifjsldkj
+  &<span class="k">iss</span>=https://as.example.com   <span class="c"># ← だれが おくったかの なふだ</span></pre>
+      </div>
+      <div class="checks">
+        <div class="chead">クライアントが すぐに 確認すること</div>
+        <ul>
+          <li><code>iss</code> が「さいしょに おねがいした 認可サーバー」と 一致するか(<b>ニセ AS に だまされていないか</b>)</li>
+          <li><code>state</code> が じぶんが 送った 値と 一致するか(CSRF 対策)</li>
+        </ul>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span><code>code</code> は短命の引換券(=認可コード)。<b><code>iss</code>(RFC9207)</b>で応答元の AS を明示し、クライアントは期待した issuer と一致するか照合。複数 AS を扱うときの<b>ミックスアップ攻撃</b>(ニセ AS に code を渡させる攻撃)を防ぎます。</div>
+    </section>
+
+    <!-- 9 STEP4 トークンリクエスト -->
+    <section class="scene" data-n="9">
+      <span class="s-eyebrow">STEP4(おくる)</span>
+      <h2 class="s-title">トークンリクエスト:code + あいことば + DPoP しょうめい</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><span class="tag2">POST /token</span></div>
+      <div class="wire">
+        <div class="whead"><span>④ クライアント ▶ 認可サーバー</span><span class="ep">POST /token</span></div>
+        <pre><span class="c"># HTTPヘッダに DPoPしょうめい(公開鍵入りの署名JWT)を のせる</span>
+<span class="k">DPoP:</span> eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2Iiwiandr...
+   <span class="c">├ ヘッダ: { "typ":"dpop+jwt","alg":"ES256","jwk":{公開鍵} }</span>
+   <span class="c">└ 中身:   { "htm":"POST", "htu":"https://as.example.com/token",</span>
+   <span class="c">           "iat":1562262616, "jti":"-BwC3ESc6acc2lTc" }</span>
+
+<span class="c"># 本文</span>
+<span class="k">grant_type</span>=authorization_code
+<span class="k">code</span>=SplxlOBeZQQYbYS6WxSbIA
+<span class="k">redirect_uri</span>=https://wallet.example.org/cb
+<span class="k">code_verifier</span>=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk  <span class="c"># ← 本物の あいことば!</span></pre>
+      </div>
+      <div class="bubble"><p><span class="who w">クライアント</span>ここで はじめて <b>本物の あいことば(code_verifier)</b>と、<b>DPoPの かぎで 署名した しょうめい</b>を いっしょに だすよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>DPoP proof</b> は毎回作る署名 JWT。<code>htm</code>(メソッド)/<code>htu</code>(宛先URL)/<code>iat</code>/<code>jti</code>(使い捨て ID)を含み、ヘッダの <code>jwk</code> に公開鍵を同梱。これで「この鍵の持ち主が、この宛先へ、今」要求していることを証明します。</div>
+    </section>
+
+    <!-- 10 STEP4 検証 -->
+    <section class="scene" data-n="10">
+      <span class="s-eyebrow">STEP4(けんさ)</span>
+      <h2 class="s-title">認可サーバーの けんさ(PKCE照合 + DPoP検証)</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><span class="tag2">じっくり チェック</span></div>
+      <div class="checks">
+        <div class="chead">認可サーバーが 確認すること</div>
+        <ul>
+          <li><b>PKCE照合:</b> <code>BASE64URL(SHA256(code_verifier))</code> が、STEP1で 預かった <code>code_challenge</code> と <b>ぴったり一致</b>するか → 一致すれば「code を横取りした別人ではない」</li>
+          <li><code>code</code> が 有効(未使用・期限内・この client 宛)か</li>
+          <li><b>DPoP検証:</b> DPoP proof の 署名が ヘッダの <code>jwk</code>(公開鍵)で 正しく 検証できるか。<code>htm/htu</code> が この要求(POST /token)と 一致、<code>jti</code> が 使い回しでないか</li>
+        </ul>
+      </div>
+      <div class="bubble"><p><span class="who o">にんかサーバー</span>あいことばの かげ と 本物が ぴったり! DPoPの 署名も 本物! よし、<b>この DPoP鍵に ひもづけた きっぷ</b>を はっこうしよう。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span>PKCE 照合(<code>SHA256(verifier)==challenge</code>)で認可コード横取りを無効化。DPoP proof の署名・<code>htm/htu</code>・<code>jti</code> 検証を通過したら、AS は proof の公開鍵から <code>jkt</code> を計算し、次ステップでトークンに束縛します。</div>
+    </section>
+
+    <!-- 11 STEP4 トークン発行 -->
+    <section class="scene" data-n="11">
+      <span class="s-eyebrow">STEP4(うけとる)</span>
+      <h2 class="s-title">DPoP束縛トークンの はっこう</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="認可サーバー"><use href="#ch-owl"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="きっぷ" style="width:64px"><use href="#prop-ticket"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg></div>
+      <div class="wire from-as">
+        <div class="whead"><span>← 認可サーバー ▶ クライアント</span><span class="ep">200 OK</span></div>
+        <pre>{ "<span class="k">token_type</span>": "DPoP",            <span class="c"># ← ただの Bearer ではない!</span>
+  "<span class="k">access_token</span>": "eyJhbGci...(中に cnf.jkt が 刻まれている)",
+  "<span class="k">expires_in</span>": 300 }
+
+<span class="c"># アクセストークンの中身(発行者が署名):</span>
+  "<span class="k">cnf</span>": { "<span class="k">jkt</span>": "0ZcOCORZNYy-DWpqq30jZyJGHTN0d2HglBV3uiguA4I" }
+        <span class="c">└ = STEP0で作った DPoP公開鍵の ゆびもん。これで きっぷが 鍵に 束縛される</span></pre>
+      </div>
+      <div class="bubble"><p><span class="who h">はいぷ先生</span>この きっぷ(トークン)には <b>DPoP鍵の ゆびもん(jkt)</b>が 刻まれた。だから <b>その かぎを もつ 本人しか つかえない</b>。ひろっても・ぬすんでも つかえない きっぷだよ!</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><code>token_type: DPoP</code> の<b>送信者制約(sender-constrained)アクセストークン</b>。トークン内(または introspection 応答)の <code>cnf.jkt</code> に DPoP 公開鍵のサムプリントが入り、以降の利用時に鍵の一致確認が必須になります。</div>
+    </section>
+
+    <!-- 12 STEP5 リソースアクセス -->
+    <section class="scene" data-n="12">
+      <span class="s-eyebrow">STEP5(おくる)</span>
+      <h2 class="s-title">リソースアクセス:きっぷ + あたらしい DPoP しょうめい</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="クライアント"><use href="#ch-wallet"/></svg><span class="arw">▶</span><svg class="who-svg" role="img" aria-label="リソースサーバー" style="width:70px"><use href="#prop-bank"/></svg><span class="tag2">POST /credential</span></div>
+      <div class="wire">
+        <div class="whead"><span>⑤ クライアント ▶ リソースサーバー</span><span class="ep">POST /credential</span></div>
+        <pre><span class="c"># きっぷは「DPoP」スキームで のせる(Bearerではない)</span>
+<span class="k">Authorization:</span> DPoP eyJhbGci...(さっきの access_token)
+
+<span class="c"># あたらしい DPoPしょうめい(宛先が まどぐちに 変わる & ath が 増える)</span>
+<span class="k">DPoP:</span> eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2Ii...
+   <span class="c">└ 中身: { "htm":"POST", "htu":"https://issuer.example.com/credential",</span>
+   <span class="c">          "iat":1562262618, "jti":"e1j3V_bKic8-LAEB",</span>
+   <span class="c">          "ath":"fUHyO2r2Z3DZ53EsNrWBb0xWXoaNy59IiKCAqksmQEo" }</span>
+   <span class="c">                └ ath = きっぷ(access_token)の ハッシュ</span></pre>
+      </div>
+      <div class="otona"><span class="tag">おとなのことば</span>利用時は <code>Authorization: DPoP &lt;token&gt;</code> と、その要求専用の新しい DPoP proof をセット。proof には <code>ath</code>(アクセストークンの SHA-256 ハッシュ)が加わり、宛先 <code>htu</code> はリソースサーバーになります。(サーバーが要求すれば <code>nonce</code> も含める)</div>
+    </section>
+
+    <!-- 13 STEP5 検証 -->
+    <section class="scene" data-n="13">
+      <span class="s-eyebrow">STEP5(けんさ)</span>
+      <h2 class="s-title">リソースサーバーの けんさ(鍵の 束縛確認)</h2>
+      <div class="flowrow"><svg class="who-svg" role="img" aria-label="リソースサーバー" style="width:74px"><use href="#prop-bank"/></svg><span class="tag2">きびしく チェック</span></div>
+      <div class="checks">
+        <div class="chead">リソースサーバーが 確認すること(ぜんぶ 通れば VC を わたす)</div>
+        <ul>
+          <li>access_token が 有効(署名/introspection、期限、scope)か</li>
+          <li>DPoP proof の 署名が ヘッダの <code>jwk</code> で 検証できるか</li>
+          <li><b>束縛の 一致:</b> きっぷの中の <code>cnf.jkt</code> と、DPoP proof の 公開鍵の ゆびもんが <b>同じ</b>か → ちがえば「鍵を もたない 別人」= 拒否</li>
+          <li><code>ath</code> が この access_token の ハッシュと 一致するか(きっぷの すり替え防止)</li>
+          <li><code>htm/htu</code> が この要求(POST /credential)と 一致、<code>jti</code> が 使い回しでないか</li>
+        </ul>
+      </div>
+      <div class="bubble"><p><span class="who r">リソースサーバー</span>きっぷの ゆびもん と、いま みせられた かぎの ゆびもんが <b>ぴったり一致</b>! ほんものの もちぬしだ。しょうめいしょ(VC)を どうぞ!</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span>核心は <b><code>cnf.jkt</code>(トークンに刻まれた指紋)== DPoP proof の公開鍵サムプリント</b>の照合。ここが一致しないと、たとえトークンを盗んでも(対応する秘密鍵がないため)proof を作れず<b>使えません</b>。<code>ath</code> でトークンと proof の結び付きも確認します。</div>
+    </section>
+
+    <!-- 14 まとめ + 対応表 -->
+    <section class="scene" data-n="14">
+      <span class="s-eyebrow">だい4わ・まとめ</span>
+      <h2 class="s-title">どの ワザが なにを まもったか</h2>
+      <div class="map-table-wrap">
+        <table class="map">
+          <thead><tr><th>ワザ</th><th>いつ</th><th>ふせぐ こと(まもる もの)</th></tr></thead>
+          <tbody>
+            <tr><td><code>PAR</code></td><td>STEP1</td><td>リクエストの 改ざん・盗み見・肥大化(ブラウザに パラメータを 晒さない)</td></tr>
+            <tr><td><code>PKCE</code></td><td>STEP0で用意→STEP4で照合</td><td>認可コードの 横取り(verifierを持つ本人だけが トークン交換できる)</td></tr>
+            <tr><td><code>iss</code></td><td>STEP3</td><td>ミックスアップ攻撃(ニセ認可サーバーへの 誘導)</td></tr>
+            <tr><td><code>DPoP</code></td><td>STEP0で鍵→STEP4で束縛→STEP5で使用</td><td>トークンの 盗難悪用(鍵を持つ本人だけが トークンを使える)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bubble" style="margin-top:8px"><p><span class="who h">はいぷ先生</span>4つの ワザが それぞれ ちがう 攻撃を ふさぐ。だから FAPI2 は「ぎんこう なみに あんぜん」なんだ。HAIP は これを VC発行にも もとめている、というわけ!</p></div>
+      <div class="otona"><span class="tag">つぎのステップ</span>正確な要件レベルは <b>docs/09(読み合わせコンパニオン)</b>の PAR / PKCE / iss / DPoP 行、概念の やさしい導入は <b>docs/10(第3話)</b>を参照。サンプル値は RFC 7636 / RFC 9449 の例に準拠。おつかれさまでした! 🎉</div>
+    </section>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prev" type="button">◀ まえへ</button>
+    <span class="pageno" id="pageno">1 / 14</span>
+    <button class="btn" id="next" type="button">つぎへ ▶</button>
+    <button class="btn ghost" id="auto" type="button" aria-pressed="false">▶ じどうさいせい</button>
+  </div>
+  <div class="dots" id="dots" role="tablist" aria-label="ページせんたく"></div>
+  <p class="hint">キーボードの ← → でも ページを めくれます</p>
+</div>
+
+<script>
+  (function(){
+    var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
+    var prevBtn = document.getElementById('prev'), nextBtn = document.getElementById('next');
+    var autoBtn = document.getElementById('auto'), pageno = document.getElementById('pageno'), dotsBox = document.getElementById('dots');
+    var idx = 0, timer = null, INTERVAL = 11000;
+    scenes.forEach(function(s, i){
+      var d = document.createElement('button'); d.className='dot'; d.type='button';
+      d.setAttribute('aria-label',(i+1)+'ページめ');
+      d.addEventListener('click', function(){ show(i); stopAuto(); });
+      dotsBox.appendChild(d);
+    });
+    var dots = Array.prototype.slice.call(dotsBox.children);
+    function show(i){
+      idx = Math.max(0, Math.min(scenes.length-1, i));
+      scenes.forEach(function(s,j){ s.classList.toggle('active', j===idx); });
+      dots.forEach(function(d,j){ if(j===idx) d.setAttribute('aria-current','true'); else d.removeAttribute('aria-current'); });
+      pageno.textContent = (idx+1)+' / '+scenes.length;
+      prevBtn.disabled = (idx===0); nextBtn.disabled = (idx===scenes.length-1);
+    }
+    function stopAuto(){ if(timer){clearInterval(timer);timer=null;} autoBtn.setAttribute('aria-pressed','false'); autoBtn.textContent='▶ じどうさいせい'; }
+    function startAuto(){ timer=setInterval(function(){ if(idx>=scenes.length-1){stopAuto();return;} show(idx+1); }, INTERVAL); autoBtn.setAttribute('aria-pressed','true'); autoBtn.textContent='⏸ とめる'; }
+    prevBtn.addEventListener('click', function(){ show(idx-1); stopAuto(); });
+    nextBtn.addEventListener('click', function(){ show(idx+1); stopAuto(); });
+    autoBtn.addEventListener('click', function(){ timer?stopAuto():startAuto(); });
+    document.addEventListener('keydown', function(e){ if(e.key==='ArrowRight'){show(idx+1);stopAuto();} if(e.key==='ArrowLeft'){show(idx-1);stopAuto();} });
+    show(0);
+  })();
+</script>
+</body>
+</html>

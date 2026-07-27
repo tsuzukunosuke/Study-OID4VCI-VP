@@ -26,6 +26,7 @@ OID4VCI / OID4VP 準拠の VC 発行・VP 検証基盤を、新しく確定し�
 | ⑧ | [HAIP 要件カタログ(Excel)](./docs/08_haip-requirements-catalog.xlsx) | 実装者 | HAIP の全要件を MUST/SHOULD/MAY/MUST NOT で分類(エコシステム・Issuerメタデータ・暗号・Attestation 中心)+ OID4VCI メタデータ全パラメータ。サンプル・参照リンク付き |
 | ⑨ | [HAIP 仕様書 読み合わせコンパニオン(Excel)](./docs/09_haip-spec-companion.xlsx) | 仕様書を精読する人 | **仕様書の見出し順に全項目(PAR/PKCE/DPoP 等の基本フロー含む)を1シートに統合**。仕様書ページと並べてスクロールしながら読む用。HAIP / OID4VCI(素) / OID4VP(素)の3仕様レベル比較付き |
 | ⑩ | [かみしばい 第3話「ひみつを まもれる おつかいさん」](./docs/10_confidential-client-fapi2-kamishibai.html) | 新入社員・研修 | **Confidential Client と FAPI2 Security Profile** を子ども向けアニメ風の紙芝居(全11ページ)で解説。金庫・ぎんこう・きっぷ等の比喩で、PAR/PKCE/iss/DPoP まで。各ページに「おとなのことば」対応メモつき |
+| ⑪ | [かみしばい 第4話「FAPI2 の証明の流れ」](./docs/11_fapi2-flow-kamishibai.html) | 実装者・研修 | **PAR → PKCE → iss → DPoP の認可フローを技術的に正確に**追う紙芝居(全14ページ)。各ステップに実際に送受信する HTTP メッセージ(パラメータ)と受け手の検証チェックリストを掲載。サンプル値は RFC 7636 / RFC 9449 の例に準拠 |
 
 ## 読む順番の目安
 
