@@ -98,7 +98,8 @@ flowchart TB
 
 ### 4.1 発行基盤(Issuer / 認可サーバー)の MUST
 
-- [ ] **認可コードフロー(`authorization_code` グラント)を MUST support**する(Pre-Authorized Code Flow は MUST ではない。draft-04 で確認済み)。認可コードフローでは `scope` 値でクレデンシャル種別を識別できるようにする
+- [ ] **認可コードフロー(`authorization_code` グラント)を MUST support**する。認可コードフローでは `scope` 値でクレデンシャル種別を識別できるようにする
+  - ⚠️ **HAIP は authorization code flow のみをプロファイル対象**とし、**Pre-Authorized Code Flow は本文に一切言及がない(=プロファイル対象外)**。MUST NOT(明示的禁止)ではないが、HAIP のセキュリティモデル(FAPI2/PAR/DPoP 等)は認可コードフロー前提のため、実質「HAIP では pre-authorized code flow は使わない」。draft-06 / 1.0(errata set 1)本文で確認済み
 - [ ] **[FAPI2 Security Profile](https://openid.net/specs/fapi-security-profile-2_0.html) の該当条項に MUST 準拠**する(draft-06 で追加された包括要件)。具体的には少なくとも以下を含む:
   - **PAR(Pushed Authorization Requests)**(該当する場合)
   - **PKCE(S256)**
@@ -131,7 +132,7 @@ flowchart TB
 - [ ] `direct_post.jwt` でレスポンスを暗号化して送信する
 - [ ] KB-JWT による Key Binding を必ず行う
 
-> 📝 Pre-Authorized Code Flow は draft-04 時点では MUST ではありません(Authorization Code Flow のみ MUST)。DC API 対応の必須範囲などは、HAIP Final 本文の該当セクションを直接確認して確定してください(本ドキュメント末尾の一次情報リンク参照)。
+> 📝 Pre-Authorized Code Flow は HAIP のプロファイル対象外です(Authorization Code Flow のみをプロファイルし MUST 化。本文に `pre-authorized_code` の言及なし)。DC API 対応の必須範囲などは、HAIP Final 本文の該当セクションを直接確認して確定してください(本ドキュメント末尾の一次情報リンク参照)。
 
 ---
 
