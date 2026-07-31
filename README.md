@@ -28,6 +28,7 @@ OID4VCI / OID4VP 準拠の VC 発行・VP 検証基盤を、新しく確定し�
 | ⑩ | [かみしばい 第3話「ひみつを まもれる おつかいさん」](./docs/10_confidential-client-fapi2-kamishibai.html) | 新入社員・研修 | **Confidential Client と FAPI2 Security Profile** を子ども向けアニメ風の紙芝居(全11ページ)で解説。金庫・ぎんこう・きっぷ等の比喩で、PAR/PKCE/iss/DPoP まで。各ページに「おとなのことば」対応メモつき |
 | ⑪ | [かみしばい 第4話「FAPI2 の証明の流れ」](./docs/11_fapi2-flow-kamishibai.html) | 実装者・研修 | **PAR → PKCE → iss → DPoP の認可フローを技術的に正確に**追う紙芝居(全14ページ)。各ステップに実際に送受信する HTTP メッセージ(パラメータ)と受け手の検証チェックリストを掲載。サンプル値は RFC 7636 / RFC 9449 の例に準拠 |
 | ⑫ | [かみしばい 第5話「しょうめいしょが おさいふに とどくまで」](./docs/12_oid4vci-issuance-kamishibai.html) | 新入社員・研修 | **OID4VCI の VC 発行フロー**を小学生向けに解説(全12ページ)。Credential Offer → Issuer メタデータ → 2つのフロー → Token → Nonce → proof → Credential → Deferred → Notification を物語で。各ページに「おとなのことば」対応メモつき |
+| ⑬ | [かみしばい 第6話「VCをVPに変身させる(KB-JWTの作り方)」](./docs/13_vc-to-vp-kbjwt-kamishibai.html) | 実装者・研修(小5〜) | **SD-JWT VC の提示(VC→VP)と KB-JWT の作成**を、手順を細かく分解し**サンプル値つき**で解説(全18ページ)。選択的開示 → sd_hash 計算(バイト列→ハッシュ→Base64url)→ KB-JWT(ペイロード→ヘッダ→署名)→ 連結 → 検証。[絵本スタイルガイド](./docs/EHON_STYLE_GUIDE.md)適用の第1作(漢字多め・詳細) |
 
 ## 読む順番の目安
 
