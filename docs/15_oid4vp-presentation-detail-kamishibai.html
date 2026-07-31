@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>はいぷ先生の まほうのルールブック 第8話 — VP提示・検証(OID4VP)の流れ</title>
+</head>
+<body>
+<style>
+:root{ --sky:#CDEBF5; --ink:#4A3B2C; --cream:#FFFDF6; --wood:#8B5E3C; --wood-dark:#6E4527; --acc:#4A9AC7; --acc-deep:#2F6E92; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic","Meiryo",sans-serif;
+    background:radial-gradient(circle at 82% 12%, #FFE9A8 0 70px, transparent 71px),
+      linear-gradient(180deg,#BFE5F2 0%, #DFF2F9 55%, #F1F6E6 100%);
+    color:var(--ink); min-height:100vh; display:flex; flex-direction:column; align-items:center;
+    padding:20px 12px 40px; line-height:1.65;
+  }
+  .site-title{text-align:center;margin:6px 0 14px}
+  .site-title h1{font-size:clamp(18px,3.6vw,28px);letter-spacing:.02em;text-wrap:balance;text-shadow:0 2px 0 rgba(255,255,255,.8)}
+  .site-title p{font-size:clamp(12px,2vw,15px);color:#6C7A52;letter-spacing:.06em}
+  .stage-wrap{width:min(960px,97vw)}
+  .stage{position:relative;background:linear-gradient(180deg,var(--sky) 0%, #E7F5FA 62%, #E4F1D8 62.5%, #D4E9C4 100%);
+    border:14px solid var(--wood);border-radius:22px;
+    box-shadow:inset 0 0 0 4px var(--wood-dark), 0 14px 30px rgba(90,60,30,.28);
+    overflow:hidden;min-height:560px;display:flex}
+  .stage::before,.stage::after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:#F3D9A4;box-shadow:inset 0 -2px 0 rgba(0,0,0,.25);top:8px;z-index:5}
+  .stage::before{left:8px} .stage::after{right:8px}
+  .cloud{position:absolute;top:24px;width:104px;height:30px;border-radius:30px;background:#fff;opacity:.78;z-index:0}
+  .cloud::before{content:"";position:absolute;left:18px;top:-16px;width:40px;height:32px;border-radius:50%;background:#fff}
+  .cloud.c1{left:-120px;animation:drift 54s linear infinite}
+  @keyframes drift{to{transform:translateX(calc(960px + 260px))}}
+  .scene{display:none;position:relative;z-index:1;flex-direction:column;width:100%;padding:20px 24px 16px}
+  .scene.active{display:flex;animation:sin .4s ease-out both}
+  @keyframes sin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .s-eyebrow{align-self:center;background:var(--acc);color:#fff;font-weight:700;font-size:12.5px;letter-spacing:.1em;padding:3px 15px;border-radius:999px;box-shadow:0 2px 0 var(--acc-deep)}
+  .s-title{text-align:center;font-size:clamp(17px,2.8vw,25px);margin:8px 0 6px;letter-spacing:.02em;text-wrap:balance}
+  .bubble{position:relative;background:var(--cream);border:3px solid var(--ink);border-radius:16px;padding:10px 16px;max-width:720px;margin:6px auto 2px;font-size:clamp(13px,2vw,16px);font-weight:600;box-shadow:0 4px 0 rgba(74,59,44,.16)}
+  .bubble p+p{margin-top:5px}
+  .who{border-radius:6px;padding:0 6px;margin-right:4px;color:#fff;font-size:.82em;font-weight:700}
+  .who.h{background:#E2803A} .who.w{background:#4A9AC7} .who.o{background:#A97B45} .who.v{background:#4A6FB5} .who.n{background:#7C9A5E} .who.k{background:#D46A8A}
+  .art{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:clamp(12px,4vw,40px);padding:10px 0 6px;min-height:170px}
+  .art svg{display:block;height:auto}
+  .ch{width:clamp(84px,14vw,140px)} .ch.big{width:clamp(112px,19vw,178px)} .ch.small{width:clamp(62px,10vw,96px)}
+  .prop{width:clamp(92px,15vw,150px)}
+  .col{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .caplabel{font-weight:700;font-size:11.5px;text-align:center}
+  .float{animation:fl 3.4s ease-in-out infinite}.float.d2{animation-delay:.6s}.float.d3{animation-delay:1.1s}
+  @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .scene.active .art>*{animation:pop .45s both}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.9)}to{opacity:1;transform:none}}
+  .spark{position:absolute;font-size:20px;color:#F5B93C;z-index:2;animation:tw 1.9s ease-in-out infinite;text-shadow:0 0 6px rgba(255,214,107,.8)}
+  @keyframes tw{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.1)}}
+  .sdstruct{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:5px;margin:8px auto 2px;max-width:740px;width:100%}
+  .sdstruct .seg{border-radius:9px;padding:7px 11px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;font-weight:700;border:2.5px solid;text-align:center;line-height:1.3}
+  .sdstruct .seg small{display:block;font-family:inherit;font-size:9.5px;font-weight:400;opacity:.85}
+  .sdstruct .jwt{background:#E7F0DC;border-color:#5EA757;color:#3F7A34}
+  .sdstruct .dis{background:#FBE7D4;border-color:#E2803A;color:#8A5A22}
+  .sdstruct .kb{background:#E0E7F6;border-color:#4A6FB5;color:#2F4A80}
+  .sdstruct .faded{opacity:.35}
+  .sdstruct .til{font-weight:900;color:#7A6A52;font-size:17px}
+  .wire{background:var(--cream);border:2.5px solid var(--ink);border-radius:12px;max-width:740px;margin:8px auto 0;overflow:hidden;box-shadow:0 3px 0 rgba(74,59,44,.15);width:100%}
+  .wire .whead{background:var(--acc);color:#fff;font-weight:700;font-size:12px;padding:5px 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+  .wire.blue .whead{background:#4A6FB5} .wire.orange .whead{background:#E2803A} .wire.owl .whead{background:#A97B45} .wire.pur .whead{background:#9B7ED9}
+  .wire .whead .ep{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+  .wire pre{margin:0;padding:9px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:#3a2f22}
+  .wire .k{color:#B5651D;font-weight:bold} .wire .c{color:#7A8A66;font-style:italic}
+  .transform{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:center;gap:6px;margin:8px auto 0;max-width:740px;width:100%}
+  .tstep{flex:1 1 150px;max-width:190px;background:var(--cream);border:2.5px solid var(--ink);border-radius:12px;padding:8px 10px;box-shadow:0 3px 0 rgba(74,59,44,.14);text-align:center}
+  .tstep .ti{font-size:22px} .tstep b{font-size:12.5px;display:block;margin:2px 0} .tstep span{font-size:11px;font-weight:400}
+  .tstep code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85em;background:#EFE7D3;border-radius:4px;padding:0 3px}
+  .tarrow{align-self:center;font-size:22px;color:var(--acc-deep);font-weight:900}
+  .checks{background:#F4FBF2;border:2.5px solid #5EA757;border-radius:12px;max-width:740px;margin:8px auto 0;padding:8px 14px;text-align:left;box-shadow:0 3px 0 rgba(74,90,44,.13);width:100%}
+  .checks .chead{font-weight:700;font-size:12.5px;margin-bottom:3px;color:#3F7A34}
+  .checks ul{list-style:none;margin:0;padding:0}
+  .checks li{font-size:12px;padding:2px 0 2px 22px;position:relative;line-height:1.5}
+  .checks li::before{content:"✓";position:absolute;left:2px;color:#5EA757;font-weight:bold}
+  .checks code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#E4F0DD;border-radius:5px;padding:0 4px;font-size:.9em}
+  .point{background:#FFF7E6;border:2px solid #E2A83C;border-radius:12px;max-width:740px;margin:8px auto 0;padding:8px 13px;font-size:12.5px;text-align:left;line-height:1.6;width:100%}
+  .point .pt{display:inline-block;background:#E2A83C;color:#fff;font-weight:700;font-size:11px;border-radius:999px;padding:1px 10px;margin-right:6px}
+  .point code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F3E7CC;border-radius:5px;padding:0 4px;font-size:.9em}
+  .otona{background:rgba(255,255,255,.9);border:2px dashed #A9B98B;border-radius:14px;padding:9px 14px;font-size:clamp(11.5px,1.8vw,13.5px);max-width:860px;margin:8px auto 0;line-height:1.65}
+  .otona .tag{display:inline-block;background:var(--acc);color:#fff;font-weight:700;font-size:11.5px;border-radius:999px;padding:1px 11px;margin-right:8px;letter-spacing:.05em;vertical-align:1px}
+  .otona code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#EEF3E4;border-radius:6px;padding:0 5px;font-size:.92em}
+  .steplist{max-width:670px;margin:6px auto 0;width:100%}
+  .steplist li{list-style:none;display:flex;gap:10px;align-items:flex-start;background:var(--cream);border:2px solid var(--ink);border-radius:11px;padding:6px 12px;margin-bottom:5px;font-size:12.5px;font-weight:700;box-shadow:0 2px 0 rgba(74,59,44,.13)}
+  .steplist .num{flex:none;min-width:23px;height:23px;padding:0 4px;border-radius:12px;background:var(--acc);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px}
+  .steplist small{display:block;font-weight:400;color:#6C7A52;font-size:11px}
+  .map-table-wrap{overflow-x:auto;max-width:860px;margin:8px auto 0;width:100%}
+  table.map{border-collapse:separate;border-spacing:0;background:var(--cream);border:3px solid var(--ink);border-radius:14px;overflow:hidden;font-size:clamp(11px,1.8vw,13.5px);width:100%}
+  table.map th{background:var(--acc);color:#fff;padding:7px 12px}
+  table.map td{padding:6px 12px;border-top:2px dotted #C8D6AC;vertical-align:top}
+  table.map td:first-child{font-weight:700;white-space:nowrap}
+  table.map code{font-family:ui-monospace,Menlo,Consolas,monospace;background:#EEF3E4;border-radius:6px;padding:0 5px;font-size:.9em}
+  .controls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+  .btn{font-family:inherit;font-size:16px;font-weight:700;letter-spacing:.04em;color:#fff;background:var(--acc);border:none;border-radius:999px;padding:12px 28px;cursor:pointer;box-shadow:0 5px 0 var(--acc-deep);transition:transform .08s,box-shadow .08s,background .2s}
+  .btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--acc-deep)}
+  .btn:focus-visible{outline:3px solid #4A6FB5;outline-offset:3px}.btn[disabled]{opacity:.4;cursor:default}
+  .btn.ghost{background:var(--cream);color:var(--ink);box-shadow:0 5px 0 #C8D6AC;border:2px solid #C8D6AC;font-size:14px;padding:10px 20px}
+  .btn.ghost[aria-pressed="true"]{background:var(--acc);color:#fff;border-color:var(--acc-deep);box-shadow:0 5px 0 var(--acc-deep)}
+  .pageno{font-weight:700;font-variant-numeric:tabular-nums;background:var(--cream);border:2px solid #C8D6AC;border-radius:999px;padding:8px 16px;font-size:14px}
+  .dots{display:flex;gap:7px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .dot{width:13px;height:13px;border-radius:50%;border:2px solid var(--wood);background:var(--cream);cursor:pointer;padding:0;transition:background .2s,transform .2s}
+  .dot:focus-visible{outline:3px solid #4A6FB5;outline-offset:2px}.dot[aria-current="true"]{background:var(--acc);transform:scale(1.25)}
+  .hint{text-align:center;color:#6C7A52;font-size:12px;margin-top:10px}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
+</style>
+<div class="site-title">
+  <h1>📤 はいぷ先生の まほうのルールブック 第8話</h1>
+  <p>〜 VP提示・検証(OID4VP)の流れ:検証者の依頼から 合格判定まで 〜</p>
+</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ch-haip" viewBox="0 0 160 185">
+      <path d="M36 108 Q18 116 24 130" fill="none" stroke="#8A5A22" stroke-width="6" stroke-linecap="round"/>
+      <path d="M124 100 Q142 88 138 72" fill="none" stroke="#8A5A22" stroke-width="6" stroke-linecap="round"/>
+      <polygon points="138,72 130,58 148,62 144,78" fill="#FFD66B" stroke="#B98A2B" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="36" y="58" width="88" height="108" rx="12" fill="#FF9D3C" stroke="#8A5A22" stroke-width="4"/>
+      <rect x="36" y="58" width="16" height="108" rx="8" fill="#D97E2B"/>
+      <line x1="118" y1="66" x2="118" y2="158" stroke="#FFE3BC" stroke-width="4"/>
+      <circle cx="74" cy="96" r="6" fill="#4A3B2C"/><circle cx="102" cy="96" r="6" fill="#4A3B2C"/>
+      <circle cx="67" cy="110" r="5" fill="#FFB7C5"/><circle cx="109" cy="110" r="5" fill="#FFB7C5"/>
+      <path d="M78 112 Q88 122 98 112" fill="none" stroke="#4A3B2C" stroke-width="3.5" stroke-linecap="round"/>
+      <text x="60" y="150" font-size="17" font-weight="bold" fill="#8A5A22" font-family="sans-serif">HAIP</text>
+      <polygon points="88,6 58,58 118,58" fill="#9B7ED9" stroke="#6C4FA8" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="88" cy="58" rx="40" ry="9" fill="#7E5FC4" stroke="#6C4FA8" stroke-width="3"/>
+      <polygon points="88,22 91,31 100,31 93,37 96,46 88,40 80,46 83,37 76,31 85,31" fill="#FFD66B"/>
+      <ellipse cx="64" cy="174" rx="12" ry="6" fill="#8A5A22"/><ellipse cx="98" cy="174" rx="12" ry="6" fill="#8A5E22"/>
+    </symbol>
+    <symbol id="ch-wallet" viewBox="0 0 120 170">
+      <path d="M18 92 Q2 98 7 112" fill="none" stroke="#3C4B57" stroke-width="6" stroke-linecap="round"/>
+      <path d="M102 92 Q118 98 113 112" fill="none" stroke="#3C4B57" stroke-width="6" stroke-linecap="round"/>
+      <rect x="18" y="18" width="84" height="132" rx="18" fill="#5FB4D9" stroke="#3C4B57" stroke-width="4"/>
+      <rect x="28" y="32" width="64" height="84" rx="10" fill="#EAF7FC"/>
+      <circle cx="48" cy="64" r="6" fill="#3C4B57"/><circle cx="72" cy="64" r="6" fill="#3C4B57"/>
+      <circle cx="41" cy="78" r="5" fill="#FFB7C5"/><circle cx="79" cy="78" r="5" fill="#FFB7C5"/>
+      <path d="M52 80 Q60 90 68 80" fill="none" stroke="#3C4B57" stroke-width="3.5" stroke-linecap="round"/>
+      <rect x="34" y="122" width="42" height="22" rx="5" fill="#FFD66B" stroke="#3C4B57" stroke-width="3"/>
+      <line x1="40" y1="130" x2="64" y2="130" stroke="#B98A2B" stroke-width="3" stroke-linecap="round"/>
+      <line x1="40" y1="137" x2="56" y2="137" stroke="#B98A2B" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="45" cy="158" rx="11" ry="6" fill="#3C4B57"/><ellipse cx="75" cy="158" rx="11" ry="6" fill="#3C4B57"/>
+    </symbol>
+    <symbol id="ch-owl" viewBox="0 0 150 175">
+      <polygon points="42,38 52,12 62,36" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4" stroke-linejoin="round"/>
+      <polygon points="88,36 98,12 108,38" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4" stroke-linejoin="round"/>
+      <ellipse cx="75" cy="102" rx="52" ry="62" fill="#C89F6E" stroke="#6B4A2B" stroke-width="4"/>
+      <ellipse cx="75" cy="120" rx="32" ry="38" fill="#EAD9BB"/>
+      <ellipse cx="30" cy="105" rx="13" ry="30" fill="#B98A5A" stroke="#6B4A2B" stroke-width="3.5"/>
+      <circle cx="58" cy="74" r="15" fill="#fff" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="92" cy="74" r="15" fill="#fff" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="58" cy="76" r="5.5" fill="#3C2F1E"/><circle cx="92" cy="76" r="5.5" fill="#3C2F1E"/>
+      <circle cx="58" cy="74" r="19" fill="none" stroke="#6B4A2B" stroke-width="3"/>
+      <circle cx="92" cy="74" r="19" fill="none" stroke="#6B4A2B" stroke-width="3"/>
+      <polygon points="75,88 67,98 83,98" fill="#FF9D3C" stroke="#6B4A2B" stroke-width="3" stroke-linejoin="round"/>
+      <ellipse cx="120" cy="103" rx="13" ry="28" fill="#B98A5A" stroke="#6B4A2B" stroke-width="3.5" transform="rotate(-25 120 103)"/>
+      <ellipse cx="58" cy="166" rx="12" ry="6" fill="#FF9D3C"/><ellipse cx="92" cy="166" rx="12" ry="6" fill="#FF9D3C"/>
+    </symbol>
+    <symbol id="ch-dog" viewBox="0 0 155 175">
+      <path d="M40 52 Q26 30 42 24 Q56 20 58 44" fill="#C89F6E" stroke="#7A5C36" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M110 52 Q124 30 108 24 Q94 20 92 44" fill="#C89F6E" stroke="#7A5C36" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="75" cy="72" r="40" fill="#F4D8A8" stroke="#7A5C36" stroke-width="4"/>
+      <path d="M38 56 Q75 30 112 56 L106 40 Q75 22 44 40 Z" fill="#4A6FB5" stroke="#2F4A80" stroke-width="3" stroke-linejoin="round"/>
+      <rect x="52" y="34" width="46" height="10" rx="5" fill="#2F4A80"/>
+      <circle cx="75" cy="30" r="5" fill="#FFD66B" stroke="#2F4A80" stroke-width="2"/>
+      <circle cx="60" cy="70" r="5.5" fill="#3C2F1E"/><circle cx="90" cy="70" r="5.5" fill="#3C2F1E"/>
+      <ellipse cx="75" cy="84" rx="9" ry="7" fill="#3C2F1E"/>
+      <path d="M75 90 Q75 98 66 99 M75 90 Q75 98 84 99" fill="none" stroke="#3C2F1E" stroke-width="3" stroke-linecap="round"/>
+      <rect x="50" y="108" width="50" height="50" rx="16" fill="#F4D8A8" stroke="#7A5C36" stroke-width="4"/>
+      <path d="M100 128 Q116 122 112 140" fill="none" stroke="#7A5C36" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="124" cy="120" r="17" fill="#DFF2F9" fill-opacity=".9" stroke="#7A5C36" stroke-width="5"/>
+      <line x1="134" y1="133" x2="146" y2="148" stroke="#7A5C36" stroke-width="7" stroke-linecap="round"/>
+      <ellipse cx="62" cy="162" rx="11" ry="6" fill="#7A5C36"/><ellipse cx="88" cy="162" rx="11" ry="6" fill="#7A5C36"/>
+    </symbol>
+    <symbol id="ch-kid" viewBox="0 0 110 170">
+      <path d="M30 96 Q14 104 20 118" fill="none" stroke="#E79A5B" stroke-width="6" stroke-linecap="round"/>
+      <path d="M80 96 Q96 104 90 118" fill="none" stroke="#E79A5B" stroke-width="6" stroke-linecap="round"/>
+      <rect x="26" y="70" width="58" height="72" rx="16" fill="#7BC96F" stroke="#4E8544" stroke-width="4"/>
+      <circle cx="55" cy="44" r="30" fill="#FCE0BE" stroke="#C98F5B" stroke-width="4"/>
+      <path d="M25 40 Q28 14 55 14 Q82 14 85 40 Q70 30 55 32 Q40 30 25 40Z" fill="#6B4A2B"/>
+      <circle cx="45" cy="46" r="4.5" fill="#3C2F1E"/><circle cx="65" cy="46" r="4.5" fill="#3C2F1E"/>
+      <circle cx="40" cy="56" r="4" fill="#FFB7C5"/><circle cx="70" cy="56" r="4" fill="#FFB7C5"/>
+      <path d="M47 58 Q55 65 63 58" fill="none" stroke="#3C2F1E" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="42" cy="160" rx="10" ry="6" fill="#4E8544"/><ellipse cx="68" cy="160" rx="10" ry="6" fill="#4E8544"/>
+    </symbol>
+    <symbol id="prop-card" viewBox="0 0 170 115">
+      <rect x="6" y="6" width="158" height="103" rx="12" fill="#FFFDF6" stroke="#7A5C36" stroke-width="4"/>
+      <rect x="6" y="6" width="158" height="26" rx="12" fill="#5EA757"/><rect x="6" y="20" width="158" height="12" fill="#5EA757"/>
+      <line x1="22" y1="52" x2="110" y2="52" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <line x1="22" y1="70" x2="90" y2="70" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <line x1="22" y1="88" x2="70" y2="88" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="134" cy="78" r="17" fill="#E2574C" stroke="#B03A31" stroke-width="3"/>
+      <polygon points="134,70 136,76 142,76 137,80 139,86 134,82 129,86 131,80 126,76 132,76" fill="#FFE3BC"/>
+    </symbol>
+    <symbol id="prop-key" viewBox="0 0 120 120">
+      <circle cx="40" cy="40" r="26" fill="none" stroke="#E2803A" stroke-width="12"/>
+      <line x1="56" y1="56" x2="98" y2="98" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+      <line x1="82" y1="82" x2="96" y2="68" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+      <line x1="94" y1="94" x2="106" y2="82" stroke="#E2803A" stroke-width="12" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="prop-ticket" viewBox="0 0 180 90">
+      <path d="M12 12 H168 V38 A8 8 0 0 0 168 62 V78 H12 V62 A8 8 0 0 0 12 38 Z" fill="#FFE9A8" stroke="#B98A2B" stroke-width="4" stroke-linejoin="round"/>
+      <line x1="122" y1="16" x2="122" y2="74" stroke="#B98A2B" stroke-width="3" stroke-dasharray="6 5"/>
+      <text x="24" y="52" font-size="19" font-weight="bold" font-family="sans-serif" fill="#8A5A22">TOKEN</text>
+      <circle cx="146" cy="45" r="13" fill="#5FB4D9" stroke="#3C4B57" stroke-width="3"/>
+      <path d="M140 45 l4 5 l8 -10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="prop-qr" viewBox="0 0 150 150">
+      <rect x="8" y="8" width="134" height="134" rx="12" fill="#FFFDF6" stroke="#4A3B2C" stroke-width="4"/>
+      <rect x="22" y="22" width="34" height="34" rx="4" fill="none" stroke="#4A3B2C" stroke-width="6"/>
+      <rect x="94" y="22" width="34" height="34" rx="4" fill="none" stroke="#4A3B2C" stroke-width="6"/>
+      <rect x="22" y="94" width="34" height="34" rx="4" fill="none" stroke="#4A3B2C" stroke-width="6"/>
+      <rect x="32" y="32" width="14" height="14" fill="#4A3B2C"/><rect x="104" y="32" width="14" height="14" fill="#4A3B2C"/><rect x="32" y="104" width="14" height="14" fill="#4A3B2C"/>
+      <rect x="70" y="24" width="10" height="10" fill="#4A3B2C"/><rect x="84" y="38" width="10" height="10" fill="#4A3B2C"/>
+      <rect x="70" y="52" width="10" height="10" fill="#4A3B2C"/><rect x="70" y="70" width="10" height="10" fill="#4A3B2C"/>
+      <rect x="88" y="70" width="10" height="10" fill="#4A3B2C"/><rect x="106" y="72" width="10" height="10" fill="#4A3B2C"/>
+      <rect x="120" y="88" width="10" height="10" fill="#4A3B2C"/><rect x="70" y="90" width="10" height="10" fill="#4A3B2C"/>
+      <rect x="88" y="104" width="10" height="10" fill="#4A3B2C"/><rect x="106" y="104" width="10" height="10" fill="#4A3B2C"/>
+      <rect x="120" y="120" width="10" height="10" fill="#4A3B2C"/><rect x="88" y="122" width="10" height="10" fill="#4A3B2C"/>
+    </symbol>
+    <symbol id="prop-list" viewBox="0 0 150 170">
+      <rect x="14" y="12" width="122" height="146" rx="10" fill="#FFFDF6" stroke="#7A5C36" stroke-width="4"/>
+      <rect x="48" y="2" width="54" height="20" rx="8" fill="#FFD66B" stroke="#B98A2B" stroke-width="3"/>
+      <text x="30" y="52" font-size="18" font-family="sans-serif" fill="#5EA757">〇</text><line x1="56" y1="46" x2="118" y2="46" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <text x="30" y="82" font-size="18" font-family="sans-serif" fill="#5EA757">〇</text><line x1="56" y1="76" x2="118" y2="76" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <text x="30" y="112" font-size="18" font-family="sans-serif" fill="#5EA757">〇</text><line x1="56" y1="106" x2="118" y2="106" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+      <text x="30" y="142" font-size="18" font-family="sans-serif" fill="#5EA757">〇</text><line x1="56" y1="136" x2="118" y2="136" stroke="#C9B48C" stroke-width="6" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="prop-safe" viewBox="0 0 150 140">
+      <rect x="10" y="10" width="130" height="118" rx="14" fill="#8FA3B8" stroke="#4E6072" stroke-width="5"/>
+      <rect x="24" y="24" width="102" height="90" rx="10" fill="#AABDCF" stroke="#4E6072" stroke-width="3"/>
+      <circle cx="75" cy="66" r="22" fill="#DDE7EF" stroke="#4E6072" stroke-width="4"/>
+      <line x1="75" y1="66" x2="75" y2="50" stroke="#4E6072" stroke-width="4" stroke-linecap="round"/>
+      <line x1="75" y1="66" x2="87" y2="72" stroke="#4E6072" stroke-width="4" stroke-linecap="round"/>
+      <rect x="60" y="96" width="30" height="10" rx="5" fill="#4E6072"/>
+    </symbol>
+    <symbol id="prop-env" viewBox="0 0 170 120">
+      <rect x="8" y="20" width="154" height="92" rx="10" fill="#FFFDF6" stroke="#7A5C36" stroke-width="4"/>
+      <polygon points="8,26 85,78 162,26" fill="#FFF1D6" stroke="#7A5C36" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="85" cy="70" r="16" fill="#9B7ED9" stroke="#6C4FA8" stroke-width="3"/>
+      <path d="M79 70 v-4 a6 6 0 0 1 12 0 v4" fill="none" stroke="#fff" stroke-width="3"/>
+      <rect x="80" y="70" width="10" height="9" rx="2" fill="#fff"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="stage-wrap">
+  <div class="stage" id="stage" aria-live="polite">
+    <div class="cloud c1"></div>
+
+    <section class="scene" data-n="1">
+      <span class="s-eyebrow">第8話・その1</span>
+      <h2 class="s-title">証明書(VC)を 検証者に 見せる しくみ</h2>
+      <span class="spark" style="top:66px;left:14%">✦</span><span class="spark" style="top:112px;right:15%;animation-delay:.7s">✦</span>
+      <div class="art">
+        <div class="col"><svg class="ch big float" role="img" aria-label="はいぷ先生"><use href="#ch-haip"/></svg></div>
+        <div class="col"><svg class="ch small float d2" role="img" aria-label="検証者"><use href="#ch-dog"/></svg></div>
+      </div>
+      <div class="bubble"><p><span class="who h">はいぷ先生</span>第6話では VC を VP に「変身」させる<b>中身</b>(KB-JWT)をやったね。第8話は、それを<b>プロトコル(やり取りのルール)</b>として見る。検証者の<b>依頼</b>から、ウォレットの<b>応答</b>、検証者の<b>合格判定</b>までの流れだよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>OID4VP</b> の提示フローを詳解します。検証者の Authorization Request(<code>dcql_query</code>/<code>nonce</code>/<code>response_mode</code>)→ ウォレットの <code>vp_token</code> 応答 → 検証。KB-JWT 生成の詳細は第6話(docs/13)を参照。</div>
+    </section>
+
+    <section class="scene" data-n="2">
+      <span class="s-eyebrow">第8話・その2</span>
+      <h2 class="s-title">登場人物と、全体の地図</h2>
+      <div class="art" style="min-height:130px">
+        <div class="col"><svg class="ch float" role="img" aria-label="検証者"><use href="#ch-dog"/></svg><div class="caplabel">検証者(Verifier)</div></div>
+        <div class="col"><svg class="ch float d2" role="img" aria-label="ウォレット"><use href="#ch-wallet"/></svg><div class="caplabel">ウォレット(Holder)</div></div>
+      </div>
+      <ul class="steplist">
+        <li><span class="num">1</span><div>検証者が「依頼書」を出す<small>何を見せてほしいか＝<code>dcql_query</code>、<code>nonce</code>、宛先</small></div></li>
+        <li><span class="num">2</span><div>ウォレットが依頼書を読み、検証者の身元を確認</div></li>
+        <li><span class="num">3</span><div>ユーザーが同意し、見せる属性を選ぶ(選択的開示)</div></li>
+        <li><span class="num">4</span><div>ウォレットが <code>vp_token</code> を組み立てる<small>VC＋選んだ開示＋KB-JWT(第6話)</small></div></li>
+        <li><span class="num">5</span><div>応答モードに従って送る<small>direct_post など</small></div></li>
+        <li><span class="num">6</span><div>検証者が検証 → 合格なら受け入れ</div></li>
+      </ul>
+      <div class="otona"><span class="tag">おとなのことば</span>OID4VP は OAuth の認可リクエストを拡張し、<b>アクセストークンの代わりに VP トークン</b>を返させる仕組み。検証者=Client、ウォレット=Authorization Server の位置づけです。</div>
+    </section>
+
+    <section class="scene" data-n="3">
+      <span class="s-eyebrow">STEP1</span>
+      <h2 class="s-title">検証者の「依頼書」(Authorization Request)</h2>
+      <div class="wire blue">
+        <div class="whead"><span>検証者 → ウォレット(署名付きリクエスト)</span></div>
+        <pre>{
+  "<span class="k">client_id</span>": "x509_hash:Uvcpq0Yn6...gAsr8B",  <span class="c"># 検証者の身元</span>
+  "<span class="k">response_type</span>": "vp_token",
+  "<span class="k">response_mode</span>": "direct_post.jwt",
+  "<span class="k">response_uri</span>": "https://verifier.example.org/response",
+  "<span class="k">nonce</span>": "1234567890abcdef",           <span class="c"># 今回だけの合言葉</span>
+  "<span class="k">dcql_query</span>": { ... 次のページ ... },
+  "<span class="k">client_metadata</span>": { "jwks": { ... 暗号化用の鍵 ... } }
+}</pre>
+      </div>
+      <div class="bubble"><p><span class="who v">検証者</span>依頼書には「<b>わたしは誰か(client_id)</b>」「<b>VPで返してね(vp_token)</b>」「<b>どこへどう送るか(response_mode/uri)</b>」「<b>今回の合言葉(nonce)</b>」「<b>何がほしいか(dcql_query)</b>」を書くよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><code>response_type=vp_token</code>。<code>client_id</code> のプレフィックス(例 <code>x509_hash</code>)で検証者の身元検証方式が決まる。<code>nonce</code> は KB-JWT に入って戻ってきます。<code>client_metadata</code> にレスポンス暗号化用の鍵を載せます。</div>
+    </section>
+
+    <section class="scene" data-n="4">
+      <span class="s-eyebrow">STEP1(つづき)</span>
+      <h2 class="s-title">DCQL:「何がほしいか」の書き方</h2>
+      <div class="wire blue">
+        <div class="whead"><span>dcql_query(ほしい証明書と属性)</span></div>
+        <pre>{
+  "<span class="k">credentials</span>": [
+    { "<span class="k">id</span>": "my_cred",
+      "<span class="k">format</span>": "dc+sd-jwt",
+      "<span class="k">meta</span>": { "vct_values": ["https://credentials.example.com/identity"] },
+      "<span class="k">claims</span>": [ { "path": ["age_over_20"] } ]   <span class="c"># 年齢だけ要求</span>
+    }
+  ]
+}</pre>
+      </div>
+      <div class="bubble"><p><span class="who h">はいぷ先生</span><b>DCQL(ディーシーキューエル)</b>は「どの種類の証明書の、どの属性がほしいか」を書く専用の言葉。ここでは <code>age_over_20</code> だけを要求している。古い <code>presentation_definition</code> は 1.0 で廃止され、DCQL に一本化されたよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><b>DCQL(Digital Credentials Query Language)</b>。<code>credentials[].id</code> が応答の <code>vp_token</code> のキーになります。<code>format</code>/<code>meta</code>/<code>claims</code> で対象と属性を指定。mdoc の場合は <code>meta.doctype_value</code> と namespace 単位の指定。</div>
+    </section>
+
+    <section class="scene" data-n="5">
+      <span class="s-eyebrow">STEP2〜3</span>
+      <h2 class="s-title">検証者の確認と、ユーザーの同意</h2>
+      <div class="art" style="min-height:120px">
+        <div class="col"><svg class="ch small float" role="img" aria-label="ウォレット"><use href="#ch-wallet"/></svg></div>
+        <div class="col"><svg class="ch small float d2" role="img" aria-label="きみ"><use href="#ch-kid"/></svg></div>
+      </div>
+      <div class="checks">
+        <div class="chead">ウォレットが 先に 確認すること</div>
+        <ul>
+          <li>依頼書の<b>署名</b>を検証者の証明書(<code>x5c</code>)で確認 → <b>本物の検証者か</b>(ニセ検証者=フィッシング対策)</li>
+          <li><code>client_id</code> と証明書が一致するか</li>
+          <li>手元の VC で <code>dcql_query</code> に<b>答えられるか</b></li>
+        </ul>
+      </div>
+      <div class="bubble"><p><span class="who w">ウォレット</span>本物の検証者だ。持っている「身分証 VC」で答えられる。<b>ユーザーに「年齢(20歳以上)だけ見せていい?」と確認</b>して、OK をもらうよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span>署名付きリクエスト(JAR)+ <code>x5c</code> チェーン検証で検証者の真正性を確認。ウォレットは要求内容をユーザーに提示し、同意(consent)を得てから提示します。</div>
+    </section>
+
+    <section class="scene" data-n="6">
+      <span class="s-eyebrow">STEP4</span>
+      <h2 class="s-title">vp_token を組み立てる</h2>
+      <div class="sdstruct">
+        <div class="seg jwt">発行者JWT</div><div class="til">~</div>
+        <div class="seg dis">開示(20歳以上)</div><div class="til">~</div>
+        <div class="seg kb">KB-JWT</div>
+      </div>
+      <div class="wire">
+        <div class="whead"><span>vp_token(DCQL の id をキーにした入れもの)</span></div>
+        <pre>{
+  "<span class="k">my_cred</span>": [                <span class="c"># ← dcql_query の id</span>
+    "eyJ0eXAiOiJkYytzZC1qd3Qi...(発行者JWT)~WyIyR0xD...(開示)~eyJ0eXAiOiJrYitqd3Qi...(KB-JWT)"
+  ]
+}</pre>
+      </div>
+      <div class="bubble"><p><span class="who h">はいぷ先生</span>第6話でやった手順(選んだ開示＋KB-JWT)で提示物を作り、<b>DCQL の id(my_cred)をキー</b>にして入れる。<code>presentation_submission</code> はもう不要。マッチングがシンプルになったよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span><code>vp_token</code> は <b>DCQL の <code>id</code> をキーとする JSON オブジェクト</b>(値は提示物の配列)。KB-JWT の <code>nonce</code>/<code>aud</code>/<code>sd_hash</code> 生成は第6話参照。</div>
+    </section>
+
+    <section class="scene" data-n="7">
+      <span class="s-eyebrow">STEP5</span>
+      <h2 class="s-title">応答モードに従って送る</h2>
+      <div class="wire">
+        <div class="whead"><span>ウォレット → 検証者(direct_post)</span><span class="ep">POST /response</span></div>
+        <pre>Content-Type: application/x-www-form-urlencoded
+
+<span class="k">vp_token</span>=%7B%22my_cred%22%3A%5B%22eyJ0eXAi...~...~...%22%5D%7D
+<span class="k">state</span>=af0ifjsldkj</pre>
+      </div>
+      <div class="point"><span class="pt">応答モードの種類</span><code>fragment</code>(同一端末でブラウザに返す)/ <code>direct_post</code>(検証者サーバへ直接POST)/ <code>direct_post.jwt</code>(direct_post を<b>暗号化</b>)/ <code>dc_api.jwt</code>(ブラウザの Digital Credentials API 経由)。どれを使うかは依頼書の <code>response_mode</code> で決まります。</div>
+      <div class="otona"><span class="tag">おとなのことば</span>クロスデバイス(PCにQR→スマホで読む)では応答を検証者サーバへ直接送る <code>direct_post</code> 系を使います。HAIP は暗号化必須の <code>direct_post.jwt</code>(次話)。</div>
+    </section>
+
+    <section class="scene" data-n="8">
+      <span class="s-eyebrow">STEP6</span>
+      <h2 class="s-title">検証者の 合格判定</h2>
+      <div class="art" style="min-height:100px"><div class="col"><svg class="ch small float" role="img" aria-label="検証者"><use href="#ch-dog"/></svg></div></div>
+      <div class="checks">
+        <div class="chead">受け取った vp_token のチェック</div>
+        <ul>
+          <li><b>発行者署名</b>:VC が本物か(発行者の鍵で検証、トラストアンカーまで)</li>
+          <li><b>開示のハッシュ照合</b>:受け取った開示が <code>_sd</code> にあるか → 属性を復元</li>
+          <li><b>KB-JWT 署名</b>:VC の <code>cnf</code> の鍵で検証 → <b>本人か</b></li>
+          <li><b>sd_hash / nonce / aud</b>:提示物のハッシュ一致・自分の <code>nonce</code>・自分宛か</li>
+          <li><b>期限・失効</b>:<code>exp</code> と Status List</li>
+          <li><b>DCQL 充足</b>:要求した属性がそろっているか</li>
+        </ul>
+      </div>
+      <div class="bubble"><p><span class="who v">検証者</span>全部合格! 「本物の身分証」で「本人が」「わたし宛に」「今回」「20歳以上」を示した、と確認。氏名や生年月日は<b>知らないまま</b>サービスを提供できるよ。</p></div>
+      <div class="otona"><span class="tag">おとなのことば</span>検証は「発行者署名 → Disclosure 照合 → KB-JWT 署名(<code>cnf</code>)→ <code>sd_hash</code>/<code>nonce</code>/<code>aud</code> → <code>exp</code>/status → DCQL 充足」。1つでも失敗なら拒否。</div>
+    </section>
+
+    <section class="scene" data-n="9">
+      <span class="s-eyebrow">第8話・まとめ</span>
+      <h2 class="s-title">用語対応表(OID4VP 提示・検証)</h2>
+      <div class="map-table-wrap">
+        <table class="map">
+          <thead><tr><th>ステップ</th><th>技術用語 / サンプル</th></tr></thead>
+          <tbody>
+            <tr><td>検証者の依頼書</td><td>Authorization Request(<code>response_type=vp_token</code>、<code>nonce</code>、<code>client_id</code>)</td></tr>
+            <tr><td>何がほしいか</td><td><b>DCQL</b>(<code>dcql_query</code>)。<code>presentation_definition</code> は廃止</td></tr>
+            <tr><td>検証者の身元確認</td><td>署名付きリクエスト(JAR)＋ <code>x5c</code>／<code>client_id</code> プレフィックス</td></tr>
+            <tr><td>提示物</td><td><code>&lt;発行者JWT&gt;~&lt;開示&gt;~&lt;KB-JWT&gt;</code>(第6話)</td></tr>
+            <tr><td>入れもの</td><td><code>vp_token</code>(DCQL の <code>id</code> がキー)</td></tr>
+            <tr><td>送り方</td><td>response_mode:<code>direct_post</code> / <code>direct_post.jwt</code> / <code>dc_api.jwt</code></td></tr>
+            <tr><td>合格判定</td><td>発行者署名・開示照合・KB署名・sd_hash・nonce/aud・exp/status・DCQL充足</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="otona" style="text-align:center"><span class="tag">つぎ</span>ここに HAIP が「きびしい上乗せ」をすると どうなるか → <b>第9話(docs/16)</b>へ。おつかれさまでした! 🎉</div>
+    </section>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="prev" type="button">◀ まえへ</button>
+    <span class="pageno" id="pageno">1 / 9</span>
+    <button class="btn" id="next" type="button">つぎへ ▶</button>
+    <button class="btn ghost" id="auto" type="button" aria-pressed="false">▶ 自動再生</button>
+  </div>
+  <div class="dots" id="dots" role="tablist" aria-label="ページ選択"></div>
+  <p class="hint">キーボードの ← → でも ページを めくれます</p>
+</div>
+<script>
+  (function(){
+    var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
+    var prevBtn=document.getElementById('prev'),nextBtn=document.getElementById('next');
+    var autoBtn=document.getElementById('auto'),pageno=document.getElementById('pageno'),dotsBox=document.getElementById('dots');
+    var idx=0,timer=null,INTERVAL=12000;
+    scenes.forEach(function(s,i){var d=document.createElement('button');d.className='dot';d.type='button';d.setAttribute('aria-label',(i+1)+'ページめ');d.addEventListener('click',function(){show(i);stopAuto();});dotsBox.appendChild(d);});
+    var dots=Array.prototype.slice.call(dotsBox.children);
+    function show(i){idx=Math.max(0,Math.min(scenes.length-1,i));scenes.forEach(function(s,j){s.classList.toggle('active',j===idx);});dots.forEach(function(d,j){if(j===idx)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current');});pageno.textContent=(idx+1)+' / '+scenes.length;prevBtn.disabled=(idx===0);nextBtn.disabled=(idx===scenes.length-1);}
+    function stopAuto(){if(timer){clearInterval(timer);timer=null;}autoBtn.setAttribute('aria-pressed','false');autoBtn.textContent='▶ 自動再生';}
+    function startAuto(){timer=setInterval(function(){if(idx>=scenes.length-1){stopAuto();return;}show(idx+1);},INTERVAL);autoBtn.setAttribute('aria-pressed','true');autoBtn.textContent='⏸ とめる';}
+    prevBtn.addEventListener('click',function(){show(idx-1);stopAuto();});
+    nextBtn.addEventListener('click',function(){show(idx+1);stopAuto();});
+    autoBtn.addEventListener('click',function(){timer?stopAuto():startAuto();});
+    document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'){show(idx+1);stopAuto();}if(e.key==='ArrowLeft'){show(idx-1);stopAuto();}});
+    show(0);
+  })();
+</script>
+
+</body>
+</html>
